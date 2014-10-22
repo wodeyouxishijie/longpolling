@@ -1,0 +1,41 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<title>消息展示页面</title>
+		<script type="text/javascript" src="js/jquery-1.8.1.min.js"></script>
+	</head>
+	<script>
+		$(function(){
+			polling();
+		});
+		
+		function polling() {
+			$.ajax({      
+                type:"GET",      
+                dataType:"json",      
+                url:"pull",      
+                timeout:35000,
+                success:function(data,textStatus){
+                    if(data.success){      
+                     	$("#htmlContent").append("<br>[有数据]"+JSON.stringify(data));      
+                    } else {
+                    	$("#htmlContent").append("<br>[无数据]"+JSON.stringify(data));     
+                    }   
+                },      
+	            error:function(XMLHttpRequest,textStatus,errorThrown){      
+                     if(textStatus=="timeout"){      
+                         $("#htmlContent").append("<br>[超时]");      
+                     }      
+	            },
+	            complete:function () {
+	            	polling();
+	            }
+            });      
+		}
+	</script>
+	<body>
+			<div id="htmlContent">
+			
+			</div>
+	</body>
+</html>

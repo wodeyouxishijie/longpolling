@@ -1,0 +1,87 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.doorcii</groupId>
+  <artifactId>talk</artifactId>
+  <packaging>war</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>talk Maven Webapp</name>
+  <url>http://maven.apache.org</url>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+	<dependency>
+		<groupId>org.eclipse.jetty</groupId>
+		<artifactId>jetty-continuation</artifactId>
+		<version>7.0.0.M4</version>
+	</dependency>
+	<dependency>
+		<groupId>org.eclipse.jetty</groupId>
+		<artifactId>jetty-servlets</artifactId>
+		<version>7.0.0.M4</version>
+	</dependency>
+	<dependency>
+		<groupId>org.eclipse.jetty</groupId>
+		<artifactId>jetty-util</artifactId>
+		<version>7.5.3.v20111011</version>
+	</dependency>
+	<dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>javax.servlet-api</artifactId>
+        <version>3.0.1</version>
+        <scope>provided</scope>
+	</dependency>
+	<dependency>
+		<groupId>com.alibaba</groupId>
+		<artifactId>fastjson</artifactId>
+		<version>1.1.41</version>
+	</dependency>
+	<dependency>
+		<groupId>org.cometd.java</groupId>
+		<artifactId>cometd-api</artifactId>
+		<version>1.1.5</version>
+	</dependency>
+	<dependency>
+		<groupId>org.cometd.java</groupId>
+		<artifactId>cometd-java-server</artifactId>
+		<version>1.1.5</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>displaytag</groupId>
+		<artifactId>displaytag</artifactId>
+		<version>1.2</version>
+	</dependency>
+
+	
+	<dependency>
+		<groupId>org.cometd.java</groupId>
+		<artifactId>cometd-java-client</artifactId>
+		<version>1.1.5</version>
+		<exclusions>
+			<exclusion>
+				<groupId>javax.servlet</groupId>
+				<artifactId>servlet-api</artifactId>
+			</exclusion>
+		</exclusions>
+	</dependency>
+	<dependency>
+		<groupId>displaytag</groupId>
+		<artifactId>displaytag</artifactId>
+		<version>1.2</version>
+		<exclusions>
+			<exclusion>
+				<groupId>com.lowagie</groupId>
+				<artifactId>itext</artifactId>
+			</exclusion>
+		</exclusions>
+	</dependency>
+  </dependencies>
+  <build>
+    <finalName>talk</finalName>
+  </build>
+</project>

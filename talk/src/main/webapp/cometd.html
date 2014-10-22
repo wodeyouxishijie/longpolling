@@ -1,0 +1,124 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<title>消息展示页面</title>
+		<link href="css/bootstrap.min.css" media="all" rel="stylesheet" type="text/css">
+		<link href="css/font-awesome.css" media="all" rel="stylesheet" type="text/css">
+		<link href="css/style.css" media="all" rel="stylesheet" type="text/css">
+		<script type="text/javascript" src="js/jquery-1.8.1.min.js"></script>
+	</head>
+	<script>
+		var max_rows = 20;
+		$(document).ready(function(){  
+			  $('.JInputButton').bind('click',function() {
+				  $('#inputTextId').val("");
+				  var obj = $('<li class="current-user"> <img width="30" height="30" src="images/avatar-female.jpg" /> <div class="bubble"> <a class="user-name" href="#">Jane Smith</a> <p class="message"> Donec odio. Quisque volutpat mattis eros. </p> <p class="time"> <strong>Today </strong>3:53 pm </p> </div> </li>');
+				  obj.css("opacity","0");
+				  $('#content-ul').append(obj);
+				  obj.animate({opacity:1},800);
+				  var div = $("div[class='widget-content padded']");
+				  div.scrollTop($("div[class='widget-content padded']")[0].scrollHeight);
+				  if($("#content-ul").children().length > max_rows) {
+					 $($("#content-ul").children()[0]).remove();
+					 $($("#content-ul").children()[0]).remove();
+					 return;
+				  }
+			  });
+			  polling();
+		});  
+		
+		function polling() {
+			$.ajax({      
+                type:"GET",      
+                dataType:"json",      
+                url:"/pull",
+                data:{"_appId":100001,"_typeId":1,"_unqId":"abcd1234568"},
+                timeout:35000,
+                success:function(data,textStatus){
+                    if(data.success){      
+                    	var obj = $('<li class="current-user"> <img width="30" height="30" src="'+data.data.avatar+'" /> <div class="bubble"> <a class="user-name" href="#">'+data.data.userNick+'</a> <p class="message">'+data.data.msg+' </p> <p class="time"> <strong>Today </strong>3:53 pm </p> </div> </li>');
+	      				obj.css("opacity","0");
+	      				$('#content-ul').append(obj);
+	      				obj.animate({opacity:1},800);
+                    } else {
+                    }   
+                },      
+	            error:function(XMLHttpRequest,textStatus,errorThrown){      
+                     if(textStatus=="timeout"){      
+                         alert('time out');
+                     }
+	            },
+	            complete:function () {
+	            	polling();
+	            }
+            });      
+		}
+		
+	</script>
+	<body style="padding:0px;">
+		<div class="container">
+			 <div class="col-md-12">
+				<div class="widget-container scrollable chat" style="height: 600px;">
+				  <div class="heading">
+					<i class="icon-comments"></i>聊天窗口<i class="icon-smile pull-right"></i>
+				  </div>
+				  <div class="widget-content padded">
+					<ul id='content-ul'>
+					  <li>
+						<img width="30" height="30" src="images/avatar-male.jpg" />
+						<div class="bubble">
+						  <a class="user-name" href="#">陈杰</a>
+						  <p class="message">
+							妹妹你坐船头哦，哥哥我岸上走。。。
+						  </p>
+						  <p class="time">
+							<strong>今天 </strong>3:53 下午
+						  </p>
+						</div>
+					  </li>
+					  <li class="current-user">
+						<img width="30" height="30" src="images/avatar-female.jpg" />
+						<div class="bubble">
+						  <a class="user-name" href="#">Jane Smith</a>
+						  <p class="message">
+							Donec odio. Quisque volutpat mattis eros.
+						  </p>
+						  <p class="time">
+							<strong>Today </strong>3:53 pm
+						  </p>
+						</div>
+					  </li>
+					  <li>
+						<img width="30" height="30" src="images/avatar-male.jpg" />
+						<div class="bubble">
+						  <a class="user-name" href="#">John Smith</a>
+						  <p class="message">
+							Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros.
+						  </p>
+						  <p class="time">
+							<strong>Today </strong>3:53 pm
+						  </p>
+						</div>
+					  </li>
+					  <li>
+						<img width="30" height="30" src="images/avatar-male.jpg" />
+						<div class="bubble">
+						  <a class="user-name" href="#">John Smith</a>
+						  <p class="message">
+							Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros.
+						  </p>
+						  <p class="time">
+							<strong>Today </strong>3:53 pm
+						  </p>
+						</div>
+					  </li>
+					</ul>
+				  </div>
+				  <div class="post-message">
+					<input class="form-control" id='inputTextId'  placeholder="Write your message here..." type="text"><input type="submit" class='JInputButton'  value="Send">
+				  </div>
+				</div>
+			  </div>
+		</div>
+	</body>
+</html>

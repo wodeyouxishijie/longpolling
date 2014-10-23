@@ -32,7 +32,11 @@ public class SendServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		super.doPost(req, resp);
+		try {
+			chatManager.sendMessage(req, resp);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 }

@@ -45,7 +45,12 @@ public class SessionManagerImpl implements SessionManager {
 			Iterator<Entry<String, Continuation>> iter = sessionMap.entrySet().iterator();
 			while(iter.hasNext()) {
 				Entry<String, Continuation> entry = iter.next();
-				resume(entry.getValue(),message);
+				Continuation continuation = entry.getValue();
+				if(continuation.isSuspended()) {
+					resume(entry.getValue(),message);
+				} else {
+					iter.remove();
+				}
 			}
 		}
 	}
@@ -71,9 +76,11 @@ public class SessionManagerImpl implements SessionManager {
 	}
 	
 	private void resume(Continuation continuation,BaseMsg msg) {
-		MessageReplyUtil.sendReplaceMsg(messageReplyer, continuation,
-				JSONReturnMsg.createJSONReturnMsg(continuation, true, msg));
-		continuation.resume();
+		if(continuation.isSuspended()) {
+			MessageReplyUtil.sendReplaceMsg(messageReplyer, continuation,
+					JSONReturnMsg.createJSONReturnMsg(continuation, true, msg));
+			continuation.resume();
+		}
 	}
 
 	public void setSessionPool(SessionPool sessionPool) {

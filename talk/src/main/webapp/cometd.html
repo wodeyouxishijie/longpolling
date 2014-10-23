@@ -8,23 +8,26 @@
 		<script type="text/javascript" src="js/jquery-1.8.1.min.js"></script>
 	</head>
 	<script>
+	
 		var max_rows = 20;
 		$(document).ready(function(){  
-			  $('.JInputButton').bind('click',function() {
-				  $('#inputTextId').val("");
-				  var obj = $('<li class="current-user"> <img width="30" height="30" src="images/avatar-female.jpg" /> <div class="bubble"> <a class="user-name" href="#">Jane Smith</a> <p class="message"> Donec odio. Quisque volutpat mattis eros. </p> <p class="time"> <strong>Today </strong>3:53 pm </p> </div> </li>');
-				  obj.css("opacity","0");
-				  $('#content-ul').append(obj);
-				  obj.animate({opacity:1},800);
-				  var div = $("div[class='widget-content padded']");
-				  div.scrollTop($("div[class='widget-content padded']")[0].scrollHeight);
-				  if($("#content-ul").children().length > max_rows) {
-					 $($("#content-ul").children()[0]).remove();
-					 $($("#content-ul").children()[0]).remove();
-					 return;
-				  }
-			  });
-			  polling();
+			polling();
+			$('.JInputButton').bind('click',function() {
+			  if($.trim($('#inputTextId').val()) == "") return;
+			  $.post("/send", 
+					  {"_appId":100001,
+						    "_typeId":1,
+						    "_unqId":"abcd1234568",
+						    "_message":""+$('#inputTextId').val()},
+					  function(data) {
+						  if(!data.success) {
+		                    	alert('发送失败！');
+		                   } else {
+		                	   $('#inputTextId').val("")
+		                   }
+				  	  }
+			  );
+			}); 
 		});  
 		
 		function polling() {
@@ -40,9 +43,17 @@
 	      				obj.css("opacity","0");
 	      				$('#content-ul').append(obj);
 	      				obj.animate({opacity:1},800);
+	      				var div = $("div[class='widget-content padded']");
+		  				div.scrollTop($("div[class='widget-content padded']")[0].scrollHeight);
+		  				if($("#content-ul").children().length > max_rows) {
+		  					$($("#content-ul").children()[0]).remove();
+		  					$($("#content-ul").children()[0]).remove();
+		  					return;
+		  				}
                     } else {
                     }   
                 },      
+                
 	            error:function(XMLHttpRequest,textStatus,errorThrown){      
                      if(textStatus=="timeout"){      
                          alert('time out');

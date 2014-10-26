@@ -1,5 +1,7 @@
 package com.doorcii.beans;
 
+import java.util.List;
+
 import org.eclipse.jetty.continuation.Continuation;
 
 public class JSONReturnMsg {
@@ -12,20 +14,31 @@ public class JSONReturnMsg {
 	
 	private boolean success;
 	
-	private BaseMsg data;
+	private String message;
 	
-	public static JSONReturnMsg createJSONReturnMsg(Continuation continuation,boolean success,BaseMsg msg) {
+	private List<ChatMsg> data;
+	
+	public static JSONReturnMsg createJSONReturnMsg(Continuation continuation,boolean success,List<ChatMsg> msgList) {
 		JSONReturnMsg jr = new JSONReturnMsg();
 		AppConfig appConfig = (AppConfig)continuation.getAttribute(AppConfig.APPCONFIG);
 		jr.setAppId(appConfig.getAppId().getAppId());
 		jr.setTypeId(appConfig.getTypeId());
 		jr.setId(appConfig.getUniqueId());
 		jr.setSuccess(success);
-		jr.setData(msg);
+		jr.setData(msgList);
 		return jr;
 	}
 	
-	
+	public String getMessage() {
+		return message;
+	}
+
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+
 	public String getId() {
 		return id;
 	}
@@ -58,11 +71,11 @@ public class JSONReturnMsg {
 		this.success = success;
 	}
 	
-	public BaseMsg getData() {
+	public List<ChatMsg> getData() {
 		return data;
 	}
 
-	public void setData(BaseMsg data) {
+	public void setData(List<ChatMsg> data) {
 		this.data = data;
 	}
 

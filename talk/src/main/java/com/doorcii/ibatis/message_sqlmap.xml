@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="talk">
+	<typeAlias alias="message" type="com.doorcii.beans.Message" /> 
+	
+	<resultMap id="talk.message" class="message" >
+		<result column="id" property="messageId" />
+		<result column="userId" property="userId" />
+		<result column="msg" property="msg" />
+		<result column="createTime" property="creatTime" />
+		<result column="type" property="type"/>
+		<result column="receiverId" property="receiverId" />
+		<result column="typeId" property="typeId" />
+		<result column="appId" property="appId" />
+	</resultMap>
+	
+	<sql id="talk.message_columns">
+		id,userId,msg,createTime,type,receiverId,appId,typeId
+	</sql>
+	
+	<insert id="talk.insertMessage">
+		INSERT INTO MESSAGE(<include refid="talk.message_columns"/>)
+		VALUES(#messageId#,#userId#,#msg#,#creatTime#,#type#,#receiverId#,#appId#,#typeId#)
+	</insert>
+	
+	<select id="talk.queryMessage" resultMap="talk.message" >  
+        SELECT <include refid="talk.message_columns"/>
+        FROM MESSAGE WHERE ID > #currentId# and APPID=#appId# AND TYPEID=#typeId# ORDER BY ID DESC LIMIT 20
+    </select>
+</sqlMap>

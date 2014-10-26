@@ -7,8 +7,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import com.alibaba.fastjson.JSONObject;
+import com.doorcii.beans.AppConfig;
+import com.doorcii.beans.JSONReturnMsg;
 import com.doorcii.manager.ChatManager;
-import com.doorcii.utils.SingleChatManger;
 
 /**
  * 发送消息
@@ -17,25 +22,32 @@ import com.doorcii.utils.SingleChatManger;
 public class SendServlet extends HttpServlet {
 	private static final long serialVersionUID = 5220212875428031949L;
 
-	private ChatManager chatManager = SingleChatManger.getSingleChatManager();
-	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		try {
-			chatManager.sendMessage(request, response);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		this.doPost(request, response);
 	}
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
+		JSONReturnMsg jr = new JSONReturnMsg();
+		WebApplicationContext ctx = WebApplicationContextUtils  
+                .getWebApplicationContext(this.getServletContext());  
+		if(null == req.getSession().getAttribute(AppConfig.USER_KEY)) {
+			jr.setSuccess(false);
+			jr.setMessage("NOT_LOGIN");
+			resp.getWriter().write(JSONObject.toJSONString(jr));
+			return;
+		}
 		try {
-			chatManager.sendMessage(req, resp);
+			((ChatManager)ctx.getBean("chatManager")).sendMessage(req, resp);
+			return;
 		} catch (Exception e) {
-			e.printStackTrace();
+			jr.setSuccess(false);
+			jr.setMessage(e.getMessage());
+			resp.getWriter().write(JSONObject.toJSONString(jr));
+			return;
 		}
 	}
 	

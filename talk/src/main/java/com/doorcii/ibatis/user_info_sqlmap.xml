@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="talk">
+	<typeAlias alias="userInfo" type="com.doorcii.beans.UserInfo" /> 
+	
+	<resultMap id="talk.userInfo" class="userInfo" >
+		<result column="id" property="id" />
+		<result column="userId" property="userId" />
+		<result column="nickName" property="nickName" />
+		<result column="avatar" property="avatar" />
+		<result column="password" property="password"/>
+		<result column="lastLoginDate" property="latestLoginDate" />
+	</resultMap>
+	
+	<sql id="talk.userInfo_columns">
+		id,userId,nickName,avatar,password,lastLoginDate
+	</sql>
+	
+	<select id="talk.queryUserInfo" resultMap="talk.userInfo" >  
+        SELECT <include refid="talk.userInfo_columns"/>
+        FROM USER_INFO WHERE USERID=#userId# and PASSWORD=#password#
+    </select>
+</sqlMap>

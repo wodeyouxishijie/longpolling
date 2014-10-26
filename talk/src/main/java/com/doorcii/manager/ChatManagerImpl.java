@@ -8,13 +8,12 @@ import org.eclipse.jetty.continuation.ContinuationSupport;
 
 import com.alibaba.fastjson.JSONObject;
 import com.doorcii.beans.AppConfig;
-import com.doorcii.beans.BaseMsg;
 import com.doorcii.beans.ChatMsg;
 import com.doorcii.beans.JSONReturnMsg;
 
 public class ChatManagerImpl implements ChatManager {
 
-	private SessionManager sessionManager = new SessionManagerImpl();
+	private SessionManager sessionManager = null;
 	
 	private static final Long EXPIRED_TIME = 30000L;
 	
@@ -30,11 +29,13 @@ public class ChatManagerImpl implements ChatManager {
 			if(null == appConf) {
 				return "PARAM_ERROR";
 			}
-			System.out.println("connection suspend..");
+			
 			/** 组装基本continuation 参数**/
 			assembleContinuation(continuation,appConf,response);
+			
+			System.out.println("connection suspend..");
 			/** hold住连接**/
-			sessionManager.newConnection(request,continuation, getOverwritedMsg(request));
+			sessionManager.newConnection(request,continuation);
 			/** 连接过期**/
 		} else if(continuation.isExpired()) {
 			System.out.println("timeout release connection..");
@@ -80,12 +81,8 @@ public class ChatManagerImpl implements ChatManager {
 		continuation.setAttribute(AppConfig.APPCONFIG, appConf);
 	}
 
-	private BaseMsg getOverwritedMsg(HttpServletRequest request) {
-		return null;
-	}
-	
-	private BaseMsg getTimeoutMsg(HttpServletRequest request) {
-		BaseMsg bm = new ChatMsg();
+	private ChatMsg getTimeoutMsg(HttpServletRequest request) {
+		ChatMsg bm = new ChatMsg();
 		bm.setErrorMsg("timeout");
 		return bm;
 	}

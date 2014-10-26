@@ -2,6 +2,8 @@ package com.doorcii.beans;
 
 public class ChatMsg extends BaseMsg {
 	
+	private long messageId;
+	
 	private String userId;
 	
 	private String userNick;
@@ -9,6 +11,35 @@ public class ChatMsg extends BaseMsg {
 	private String avatar;
 	
 	private String msg;
+	
+	private String targetUserId;
+	
+	private boolean self = false;
+	
+	
+	public long getMessageId() {
+		return messageId;
+	}
+
+	public void setMessageId(long messageId) {
+		this.messageId = messageId;
+	}
+
+	public boolean isSelf() {
+		return self;
+	}
+
+	public void setSelf(boolean self) {
+		this.self = self;
+	}
+
+	public String getTargetUserId() {
+		return targetUserId;
+	}
+
+	public void setTargetUserId(String targetUserId) {
+		this.targetUserId = targetUserId;
+	}
 
 	public String getUserId() {
 		return userId;

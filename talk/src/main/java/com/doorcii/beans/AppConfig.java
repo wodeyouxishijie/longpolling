@@ -11,6 +11,14 @@ public class AppConfig {
 	
 	public static final String APPCONFIG = "appConfig";
 	
+	public static final String MESSAGEKEY = "messageKey";
+	
+	public static final String MAX_KEY = "MXID";
+	
+	public static final String MESSAGE_MAX_ID = "msgId";
+	
+	public static final String USER_KEY = "_user_";
+	
 	private AppIdCenter appId;
 	
 	private int typeId;

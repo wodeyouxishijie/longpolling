@@ -69,7 +69,10 @@ public class UserSessionPool implements SessionPool {
 	}
 	
 	public Map<String,Continuation> getSessionMap(AppConfig appConfig) {
-		return contiMap.get(appConfig.getAppId().getAppId()).get(appConfig.getTypeId()).get(appConfig.getUniqueId());
+		if(null != contiMap.get(appConfig.getAppId().getAppId()) && null != contiMap.get(appConfig.getAppId().getAppId()).get(appConfig.getTypeId()))
+			return contiMap.get(appConfig.getAppId().getAppId()).get(appConfig.getTypeId()).get(appConfig.getUniqueId());
+		else 
+			return null;
 	}
 	
 	/**

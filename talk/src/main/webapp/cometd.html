@@ -3,13 +3,14 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 		<title>消息展示页面</title>
 		<link href="css/bootstrap.min.css" media="all" rel="stylesheet" type="text/css">
-		<link href="css/font-awesome.css" media="all" rel="stylesheet" type="text/css">
 		<link href="css/style.css" media="all" rel="stylesheet" type="text/css">
 		<script type="text/javascript" src="js/jquery-1.8.1.min.js"></script>
 	</head>
 	<script>
-	
+		var maxId = 0;
 		var max_rows = 20;
+		var maxMessageId = 0;
+		var uniqueId = 'testId';
 		$(document).ready(function(){  
 			polling();
 			$('.JInputButton').bind('click',function() {
@@ -17,39 +18,59 @@
 			  $.post("/send", 
 					  {"_appId":100001,
 						    "_typeId":1,
-						    "_unqId":"abcd1234568",
+						    "_unqId":uniqueId,
 						    "_message":""+$('#inputTextId').val()},
 					  function(data) {
 						  if(!data.success) {
-		                    	alert('发送失败！');
+		                    	alert('发送失败！原因：'+data.message);
 		                   } else {
-		                	   $('#inputTextId').val("")
+		                	   $('#inputTextId').val("");
 		                   }
 				  	  }
 			  );
 			}); 
 		});  
 		
+		function getmaxId() {
+			return maxId;
+		}
+		
+		function getMessageId() {
+			return maxMessageId;
+		}
+		
 		function polling() {
 			$.ajax({      
                 type:"GET",      
                 dataType:"json",      
                 url:"/pull",
-                data:{"_appId":100001,"_typeId":1,"_unqId":"abcd1234568"},
+                data:{"_appId":100001,"_typeId":1,"_unqId":uniqueId,"MXID":getmaxId(),"msgId":getMessageId()},
                 timeout:35000,
                 success:function(data,textStatus){
-                    if(data.success){      
-                    	var obj = $('<li class="current-user"> <img width="30" height="30" src="'+data.data.avatar+'" /> <div class="bubble"> <a class="user-name" href="#">'+data.data.userNick+'</a> <p class="message">'+data.data.msg+' </p> <p class="time"> <strong>Today </strong>3:53 pm </p> </div> </li>');
-	      				obj.css("opacity","0");
-	      				$('#content-ul').append(obj);
-	      				obj.animate({opacity:1},800);
-	      				var div = $("div[class='widget-content padded']");
-		  				div.scrollTop($("div[class='widget-content padded']")[0].scrollHeight);
-		  				if($("#content-ul").children().length > max_rows) {
-		  					$($("#content-ul").children()[0]).remove();
-		  					$($("#content-ul").children()[0]).remove();
-		  					return;
-		  				}
+                    if(data.success){
+                    	if(data.data) {
+	                    	for(i=data.data.length-1;i >=0 ;i-- ) {
+	                    		var obj = $('<li class="'+(data.data[i].self?'current-user':'')+
+	                    				'"> <img width="30" height="30" src="'+data.data[i].avatar
+	                    				+'" /> <div class="bubble"> <a class="user-name" href="#">'+data.data[i].userNick
+	                    				+'</a> <p class="message">'+data.data[i].msg+' </p> <p class="time"> <strong>今天 </strong>'
+	                    				+data.data[i].timeStr+' </p> </div> </li>');
+	    	      				obj.css("opacity","0");
+	    	      				$('#content-ul').append(obj);
+	    	      				obj.animate({opacity:1},800);
+	    	      				var div = $("div[class='widget-content padded']");
+	    		  				div.scrollTop($("div[class='widget-content padded']")[0].scrollHeight);
+	    		  				if($("#content-ul").children().length > max_rows) {
+	    		  					$($("#content-ul").children()[0]).remove();
+	    		  					$($("#content-ul").children()[0]).remove();
+	    		  					return;
+	    		  				}
+	    		  				if(i == 0) {
+	    		  					maxMessageId = data.data[i].messageId;
+	    		  					maxId = data.data[i].id;
+	    		  				}
+	                    	}	
+                    	}		
                     } else {
                     }   
                 },      
@@ -75,54 +96,18 @@
 				  </div>
 				  <div class="widget-content padded">
 					<ul id='content-ul'>
-					  <li>
-						<img width="30" height="30" src="images/avatar-male.jpg" />
-						<div class="bubble">
-						  <a class="user-name" href="#">陈杰</a>
-						  <p class="message">
-							妹妹你坐船头哦，哥哥我岸上走。。。
-						  </p>
-						  <p class="time">
-							<strong>今天 </strong>3:53 下午
-						  </p>
-						</div>
-					  </li>
-					  <li class="current-user">
-						<img width="30" height="30" src="images/avatar-female.jpg" />
-						<div class="bubble">
-						  <a class="user-name" href="#">Jane Smith</a>
-						  <p class="message">
-							Donec odio. Quisque volutpat mattis eros.
-						  </p>
-						  <p class="time">
-							<strong>Today </strong>3:53 pm
-						  </p>
-						</div>
-					  </li>
-					  <li>
-						<img width="30" height="30" src="images/avatar-male.jpg" />
-						<div class="bubble">
-						  <a class="user-name" href="#">John Smith</a>
-						  <p class="message">
-							Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros.
-						  </p>
-						  <p class="time">
-							<strong>Today </strong>3:53 pm
-						  </p>
-						</div>
-					  </li>
-					  <li>
-						<img width="30" height="30" src="images/avatar-male.jpg" />
-						<div class="bubble">
-						  <a class="user-name" href="#">John Smith</a>
-						  <p class="message">
-							Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros.
-						  </p>
-						  <p class="time">
-							<strong>Today </strong>3:53 pm
-						  </p>
-						</div>
-					  </li>
+						<li>
+							<img width="30" height="30" src="images/avatar-male.jpg">
+							<div class="bubble">
+							  <a class="user-name" href="#">ROOT</a>
+							  <p class="message">
+								扫描二维码，一起来瞎扯吧！！
+							  </p>
+							  <p class="time">
+								<strong></strong>
+							  </p>
+							</div>
+					    </li>
 					</ul>
 				  </div>
 				  <div class="post-message">

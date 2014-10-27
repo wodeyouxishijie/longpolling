@@ -58,7 +58,7 @@
                     if(data.success){
                     	if(data.data) {
 	                    	for(i=data.data.length-1;i >=0 ;i-- ) {
-	                    		var obj = $('<li class="'+(data.data[i].self?'current-user':'')+
+	                    		var obj = $('<li class="'+(data.data[i].self==true?'current-user':'')+
 	                    				'"> <img width="30" height="30" src="'+data.data[i].avatar
 	                    				+'" /> <div class="bubble"> <a class="user-name" href="#">'+data.data[i].userNick
 	                    				+'</a> <p class="message">'+data.data[i].msg+' </p> <p class="time"> <strong>今天 </strong>'

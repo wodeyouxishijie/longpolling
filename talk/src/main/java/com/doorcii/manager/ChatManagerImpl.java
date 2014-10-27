@@ -10,6 +10,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.doorcii.beans.AppConfig;
 import com.doorcii.beans.ChatMsg;
 import com.doorcii.beans.JSONReturnMsg;
+import com.doorcii.beans.UserInfo;
 
 public class ChatManagerImpl implements ChatManager {
 
@@ -52,14 +53,15 @@ public class ChatManagerImpl implements ChatManager {
 		if(null == appConf) {
 			return "PARAM_ERROR";
 		}
+		UserInfo userInfo = (UserInfo)request.getSession().getAttribute(AppConfig.USER_KEY);
 		/** 点对点发送时设置该参数，暂时先不支持，内存查找方案还没想好  **/
 		String targetUserId = request.getParameter("_tarUId");
 		String message = request.getParameter("_message");
 		ChatMsg cm = new ChatMsg();
 		cm.setMsg(message);
-		cm.setUserId("123456");
-		cm.setUserNick("nickName");
-		cm.setAvatar("images/avatar-female.jpg");
+		cm.setUserId(userInfo.getUserId());
+		cm.setUserNick(userInfo.getNickName());
+		cm.setAvatar(userInfo.getAvatar());
 		sessionManager.releaseOneId(appConf, targetUserId, cm, request);
 		responseOK(appConf,response);
 		return null;

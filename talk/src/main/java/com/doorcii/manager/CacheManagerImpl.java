@@ -66,7 +66,7 @@ public class CacheManagerImpl implements CacheManager {
 		for(String userId : userSet) {
 			userList.add(getUser(userId));
 		}
-		return null;
+		return userList;
 	}
 
 	@Override
@@ -109,7 +109,7 @@ public class CacheManagerImpl implements CacheManager {
 		return serizableUtil.readClassAndObject(input);
 	}
 	
-	private UserInfo getDeserilizedUser(byte [] bytes) {
+	public UserInfo getDeserilizedUser(byte [] bytes) {
 		if(null == bytes) {
 			return null;
 		}
@@ -119,11 +119,18 @@ public class CacheManagerImpl implements CacheManager {
 		return serizableUtil.readObject(input, UserInfo.class);
 	}
 	
-	private byte[] getSerializedUserByte(UserInfo userInfo) {
+	public static void main(String[] args) {
+		UserInfo user = new UserInfo();
+		CacheManagerImpl cmi = new CacheManagerImpl();
+		byte[] userByte = cmi.getSerializedUserByte(user);
+		System.out.println(cmi.getDeserilizedUser(userByte));
+	}
+	
+	public byte[] getSerializedUserByte(UserInfo userInfo) {
 		Kryo serizableUtil = new Kryo();
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		Output output = new Output(baos);
-		serizableUtil.writeClassAndObject(output, userInfo);
+		serizableUtil.writeObject(output, userInfo);
 		output.flush();
 		return baos.toByteArray();
 	}

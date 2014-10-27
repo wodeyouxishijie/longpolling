@@ -17,6 +17,7 @@ import com.doorcii.beans.AppConfig;
 import com.doorcii.beans.JSONReturnMsg;
 import com.doorcii.beans.UserInfo;
 import com.doorcii.ibatis.UserDAO;
+import com.doorcii.manager.CacheManager;
 
 public class LoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 4452738004780618441L;
@@ -44,9 +45,11 @@ public class LoginServlet extends HttpServlet {
 		try {
 			UserInfo userInfo = userDAO.getUserById(username, md5Pwd);
 			if(null != userInfo) {
+				CacheManager cacheManger = (CacheManager)ctx.getBean("cacheManager");
+				cacheManger.setUser(userInfo);
 				request.getSession().setAttribute(AppConfig.USER_KEY, userInfo);
-				jr.setSuccess(true);
-				resp.getWriter().write(JSONObject.toJSONString(jr));
+				resp.sendRedirect("/cometd.html");
+				return;
 			} else {
 				jr.setSuccess(false);
 				jr.setMessage("用户名或者密码错误！");

@@ -29,6 +29,14 @@
 				  	  }
 			  );
 			}); 
+			$('#inputTextId').focus();
+			$(document).keydown(function(enent){
+			     if(event.keyCode==13){
+			    	 if($('#inputTextId').val() != "") {
+			    		 $('.JInputButton').click();
+			    	 }
+			     }    
+			});
 		});  
 		
 		function getmaxId() {

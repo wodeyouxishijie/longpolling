@@ -40,7 +40,10 @@ public class CacheManagerImpl implements CacheManager {
 			throws Exception {
 		List<UserInfo> userList = new ArrayList<UserInfo>();
 		for(String userId : userSet) {
-			userList.add(getUser(userId));
+			UserInfo userInfo = getUser(userId);
+			if(userInfo!=null) {
+				userList.add(userInfo);
+			}
 		}
 		return userList;
 	}

@@ -37,6 +37,7 @@ public class PullServlet extends HttpServlet {
 				return;
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			jr.setSuccess(false);
 			jr.setMessage(e.getMessage());
 			resp.getWriter().write(JSONObject.toJSONString(jr));

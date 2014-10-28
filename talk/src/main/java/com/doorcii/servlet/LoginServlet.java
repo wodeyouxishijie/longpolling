@@ -56,6 +56,7 @@ public class LoginServlet extends HttpServlet {
 				resp.getWriter().write(JSONObject.toJSONString(jr));
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			jr.setSuccess(false);
 			jr.setMessage(e.getMessage());
 			resp.getWriter().write(JSONObject.toJSONString(jr));

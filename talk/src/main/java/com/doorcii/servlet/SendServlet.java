@@ -44,6 +44,7 @@ public class SendServlet extends HttpServlet {
 			((ChatManager)ctx.getBean("chatManager")).sendMessage(req, resp);
 			return;
 		} catch (Exception e) {
+			e.printStackTrace();
 			jr.setSuccess(false);
 			jr.setMessage(e.getMessage());
 			resp.getWriter().write(JSONObject.toJSONString(jr));

@@ -11,13 +11,28 @@
 		var max_rows = 20;
 		var maxMessageId = 0;
 		var uniqueId = 'testId';
+		var appId = 100001;
+		var typeId = 1;
 		$(document).ready(function(){  
 			polling();
 			$('.JInputButton').bind('click',function() {
 			  if($.trim($('#inputTextId').val()) == "") return;
-			  $.post("/send", 
-					  {"_appId":100001,
-						    "_typeId":1,
+			  sendMsg();
+			}); 
+			$('#inputTextId').focus();
+			$(document).keydown(function(enent){
+			     if(event.which==13){
+			    	 if($('#inputTextId').val() != "") {
+			    		 $('.JInputButton').click();
+			    	 }
+			     }    
+			});
+		});  
+		
+		function sendMsg() {
+			 $.post("/send", 
+					  {"_appId":appId,
+						    "_typeId":typeId,
 						    "_unqId":uniqueId,
 						    "_message":""+$('#inputTextId').val()},
 					  function(data) {
@@ -26,18 +41,10 @@
 		                   } else {
 		                	   $('#inputTextId').val("");
 		                   }
-				  	  }
+				  	  },
+				  	  "json"
 			  );
-			}); 
-			$('#inputTextId').focus();
-			$(document).keydown(function(enent){
-			     if(event.keyCode==13){
-			    	 if($('#inputTextId').val() != "") {
-			    		 $('.JInputButton').click();
-			    	 }
-			     }    
-			});
-		});  
+		}
 		
 		function getmaxId() {
 			return maxId;
@@ -85,7 +92,6 @@
                 
 	            error:function(XMLHttpRequest,textStatus,errorThrown){      
                      if(textStatus=="timeout"){      
-                         alert('time out');
                      }
 	            },
 	            complete:function () {

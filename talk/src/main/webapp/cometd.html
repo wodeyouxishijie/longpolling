@@ -63,7 +63,7 @@
                 timeout:35000,
                 success:function(data,textStatus){
                     if(data.success){
-                    	if(data.data) {
+                    	if(data.data && data.data.length > 0) {
 	                    	for(i=data.data.length-1;i >=0 ;i-- ) {
 	                    		var obj = $('<li class="'+(data.data[i].self==true?'current-user':'')+
 	                    				'"> <img width="30" height="30" src="'+data.data[i].avatar
@@ -78,13 +78,10 @@
 	    		  				if($("#content-ul").children().length > max_rows) {
 	    		  					$($("#content-ul").children()[0]).remove();
 	    		  					$($("#content-ul").children()[0]).remove();
-	    		  					return;
-	    		  				}
-	    		  				if(i == 0) {
-	    		  					maxMessageId = data.data[i].messageId;
-	    		  					maxId = data.data[i].id;
 	    		  				}
 	                    	}	
+	                    	maxMessageId = data.data[data.data.length-1].messageId;
+		  					maxId = data.data[data.data.length-1].id;
                     	}		
                     } else {
                     }   

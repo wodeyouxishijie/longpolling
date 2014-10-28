@@ -8,14 +8,6 @@ import com.doorcii.beans.UserInfo;
 
 public interface CacheManager {
 	
-	public void setStringValue(AppConfig appConf,String key,String value,long expireTime) throws Exception;
-	
-	public String getStringValue(AppConfig appConf,String key) throws Exception;
-	
-	public void setObject(AppConfig appConf,String key,Object obj) throws Exception;
-	
-	public Object getObject(AppConfig appConf,String key) throws Exception;
-	
 	public UserInfo getUser(String userId) throws Exception;
 	
 	public List<UserInfo> batchGetUserInfo(Set<String> userSet) throws Exception;

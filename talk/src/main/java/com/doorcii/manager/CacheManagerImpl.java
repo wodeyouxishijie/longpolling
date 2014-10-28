@@ -1,62 +1,38 @@
 package com.doorcii.manager;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
-
-import redis.clients.jedis.ShardedJedis;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import com.doorcii.beans.AppConfig;
 import com.doorcii.beans.UserInfo;
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Input;
-import com.esotericsoftware.kryo.io.Output;
 
 public class CacheManagerImpl implements CacheManager {
-
-	private ShardedJedis jedisClient;
+	
+	private RedisTemplate<String,Long>  longCounterTemplate; 
+	
+	private RedisTemplate<String,UserInfo>  userTemplate;  
 	
 	private static final String USER_ARE = "_user_info_";
 	
 	private static final String USER_MSG_COUNT = "_counter_";
 	
 	private static final String COUNTER = "_counter_";
-	
-	@Override
-	public void setStringValue(AppConfig appConf,String key, String value,long expireTime) throws Exception {
-		if(expireTime < 0) {
-			jedisClient.set(getStringKey(appConf,key), value);
-		} else {
-			jedisClient.set(getStringKey(appConf,key), value, null, "PX", expireTime);
-		}
-	}
 
 	@Override
 	public long getMessageRedId(String userId) throws Exception {
-		String maxId = jedisClient.get(USER_MSG_COUNT+userId);
-		if(StringUtils.isNotBlank(maxId)) {
-			return Long.valueOf(maxId);
+		Long maxId = longCounterTemplate.opsForValue().get(USER_MSG_COUNT+userId);
+		if(null != maxId) {
+			return maxId;
 		}
 		return 0;
 	}
 
 	@Override
 	public void setMessageRedId(String userId, long messageId) throws Exception {
-		jedisClient.set(USER_MSG_COUNT+userId, String.valueOf(messageId));
-	}
-
-	@Override
-	public String getStringValue(AppConfig appConf,String key) throws Exception {
-		return jedisClient.get(getStringKey(appConf,key));
-	}
-
-	@Override
-	public void setObject(AppConfig appConf,String key, Object obj) throws Exception {
-		jedisClient.set(getStringKey(appConf,key).getBytes(), null == obj?null:getSerializedObjectByte(obj));
+		longCounterTemplate.opsForValue().set(USER_MSG_COUNT+userId, messageId);
 	}
 
 	@Override
@@ -71,86 +47,33 @@ public class CacheManagerImpl implements CacheManager {
 
 	@Override
 	public UserInfo getUser(String userId) throws Exception {
-		byte bytes[] = jedisClient.get((USER_ARE+userId).getBytes());
-		return getDeserilizedUser(bytes);
+		return userTemplate.opsForValue().get(USER_ARE+userId);
 	}
 
 	@Override
 	public void setUser(UserInfo user) throws Exception {
-		jedisClient.set((USER_ARE+user.getUserId()).getBytes(), getSerializedUserByte(user));
+		userTemplate.opsForValue().set(USER_ARE+user.getUserId(), user);
 	}
 
 	@Override
 	public Long incrKey(AppConfig appConf, String key) throws Exception {
-		return jedisClient.incr(appConf.getAppId()+"_"+appConf.getTypeId()+"_"+COUNTER+key);
+		return longCounterTemplate.opsForValue().increment(appConf.getAppId()+"_"+appConf.getTypeId()+"_"+COUNTER+key, 1);
 	}
 
 	@Override
 	public Long getIncrValue(AppConfig appConf, String key) throws Exception {
-		return jedisClient.incrBy(appConf.getAppId()+"_"+appConf.getTypeId()+"_"+COUNTER+key, 0);
+		
+		Long value = longCounterTemplate.opsForValue().increment(appConf.getAppId()+"_"+appConf.getTypeId()+"_"+COUNTER+key,0);
+		return value==null?0L:value;
 	}
 
-	private byte[] getSerializedObjectByte(Object obj) {
-		Kryo serizableUtil = new Kryo();
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		Output output = new Output(baos);
-		serizableUtil.writeClassAndObject(output, obj);
-		output.flush();
-		return baos.toByteArray();
-	}
-	
-	private Object getDeserilizedObject(byte [] bytes) {
-		if(null == bytes) {
-			return null;
-		}
-		Kryo serizableUtil = new Kryo();
-		ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-		Input input = new Input(bais);
-		return serizableUtil.readClassAndObject(input);
-	}
-	
-	public UserInfo getDeserilizedUser(byte [] bytes) {
-		if(null == bytes) {
-			return null;
-		}
-		Kryo serizableUtil = new Kryo();
-		ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-		Input input = new Input(bais);
-		return serizableUtil.readObject(input, UserInfo.class);
-	}
-	
-	public static void main(String[] args) {
-		UserInfo user = new UserInfo();
-		CacheManagerImpl cmi = new CacheManagerImpl();
-		byte[] userByte = cmi.getSerializedUserByte(user);
-		System.out.println(cmi.getDeserilizedUser(userByte));
-	}
-	
-	public byte[] getSerializedUserByte(UserInfo userInfo) {
-		Kryo serizableUtil = new Kryo();
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		Output output = new Output(baos);
-		serizableUtil.writeObject(output, userInfo);
-		output.flush();
-		return baos.toByteArray();
-	}
-	
-	@Override
-	public Object getObject(AppConfig appConf,String key) throws Exception {
-		byte[] bytes = jedisClient.get(getStringKey(appConf,key).getBytes());
-		if(null != bytes) {
-			return getDeserilizedObject(bytes);
-		}
-		return null;
+	public void setLongCounterTemplate(
+			RedisTemplate<String, Long> longCounterTemplate) {
+		this.longCounterTemplate = longCounterTemplate;
 	}
 
-	
-	public void setJedisClient(ShardedJedis jedisClient) {
-		this.jedisClient = jedisClient;
+	public void setUserTemplate(RedisTemplate<String, UserInfo> userTemplate) {
+		this.userTemplate = userTemplate;
 	}
-	
-	private String getStringKey(AppConfig appConf,String key) {
-		return appConf.getAppId()+"_"+appConf.getTypeId()+"_"+key;
-	}
-	
+
 }

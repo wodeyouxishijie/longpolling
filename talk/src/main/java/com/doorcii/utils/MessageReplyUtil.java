@@ -2,8 +2,8 @@ package com.doorcii.utils;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.eclipse.jetty.continuation.Continuation;
 
 import com.doorcii.beans.AppConfig;

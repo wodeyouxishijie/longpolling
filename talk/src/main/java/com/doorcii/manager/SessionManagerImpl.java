@@ -40,10 +40,10 @@ public class SessionManagerImpl implements SessionManager {
 	 */
 	@Override
 	public void newConnection(HttpServletRequest request,Continuation continuation) throws Exception {
-		Long maxId = ServletRequestUtils.getLongParameter(request, AppConfig.MAX_KEY,0L);
+		Long versionId = ServletRequestUtils.getLongParameter(request, AppConfig.VERSION_ID,0L);
 		AppConfig appConfig = (AppConfig)continuation.getAttribute(AppConfig.APPCONFIG);
-		Long cacheMaxId = cacheManager.getIncrValue(appConfig, AppConfig.MAX_KEY);
-		if(cacheMaxId <= maxId) {
+		Long oldVersionId = cacheManager.getIncrValue(appConfig, AppConfig.VERSION_ID);
+		if(oldVersionId <= versionId) {
 			Continuation oldContinuation = sessionPool.setContinuation((AppConfig)continuation.getAttribute(AppConfig.APPCONFIG),
 					request.getSession().getId(), continuation);
 			if(null != oldContinuation) {
@@ -57,7 +57,7 @@ public class SessionManagerImpl implements SessionManager {
 			Long maxMessageId = ServletRequestUtils.getLongParameter(request, AppConfig.MESSAGE_MAX_ID,0L);
 			UserInfo user = (UserInfo)request.getSession().getAttribute(AppConfig.USER_KEY);
 			List<Message> messageList = messageDAO.getMessageRange(maxMessageId,appConfig.getAppId().getAppId(),appConfig.getTypeId());
-			continuation.setAttribute(AppConfig.MESSAGEKEY, message2ChatMsg(messageList,null==user?null:user.getUserId(),cacheMaxId));
+			continuation.setAttribute(AppConfig.MESSAGEKEY, message2ChatMsg(messageList,null==user?null:user.getUserId(),oldVersionId));
 			resume(continuation);
 		}
 	}
@@ -70,8 +70,8 @@ public class SessionManagerImpl implements SessionManager {
 		/** 保存消息实体 **/
 		int count = messageDAO.saveMessage(msg);
 		if(count > 0) {
-			Long maxId = cacheManager.incrKey(appConf, AppConfig.MAX_KEY);
-			message.setId(maxId);
+			Long versionId = cacheManager.incrKey(appConf, AppConfig.VERSION_ID);
+			message.setId(versionId);
 			message.setMessageId(msg.getMessageId());
 			if(null != sessionMap) {
 				Iterator<Entry<String, Continuation>> iter = sessionMap.entrySet().iterator();
@@ -79,11 +79,19 @@ public class SessionManagerImpl implements SessionManager {
 					Entry<String, Continuation> entry = iter.next();
 					Continuation continuation = entry.getValue();
 					if(continuation.isSuspended()) {
-						if(request.getSession().getId().equals(entry.getKey())) {
-							message.setSelf(true);
+						Long vId = (Long)continuation.getAttribute(AppConfig.VERSION_ID);
+						/**
+						 * 当当前版本号大于已有版本号立即返回
+						 */
+						if(null != vId && versionId > vId) {
+							if(request.getSession().getId().equals(entry.getKey())) {
+								message.setSelf(true);
+							} else {
+								message.setSelf(false);
+							}
+							entry.getValue().setAttribute(AppConfig.MESSAGEKEY, Arrays.asList(message));
+							resume(entry.getValue());
 						}
-						entry.getValue().setAttribute(AppConfig.MESSAGEKEY, Arrays.asList(message));
-						resume(entry.getValue());
 					} else {
 						iter.remove();
 					}
@@ -108,14 +116,14 @@ public class SessionManagerImpl implements SessionManager {
 		return msg;
 	}
 
-	private List<ChatMsg> message2ChatMsg(List<Message> messageList,String currentUserId,Long maxId) {
+	private List<ChatMsg> message2ChatMsg(List<Message> messageList,String currentUserId,Long versionId) {
 		if(null != messageList && messageList.size() > 0) {
 			List<ChatMsg> msgList = new ArrayList<ChatMsg>();
 			Set<String> userSet = new HashSet<String>();
 			for(Message message : messageList) {
 				ChatMsg cm = new ChatMsg();
 				cm.setMsg(message.getMsg());
-				cm.setId(maxId);
+				cm.setId(versionId);
 				cm.setMessageId(message.getMessageId());
 				cm.setUserId(message.getUserId());
 				cm.setTargetUserId(message.getReceiverId());

@@ -7,7 +7,7 @@
 		<script type="text/javascript" src="js/jquery-1.8.1.min.js"></script>
 	</head>
 	<script>
-		var maxId = 0;
+		var versionId = 0;
 		var max_rows = 20;
 		var maxMessageId = 0;
 		var uniqueId = 'testId';
@@ -24,6 +24,7 @@
 			     if(event.which==13){
 			    	 if($('#inputTextId').val() != "") {
 			    		 $('.JInputButton').click();
+			    		 $('#inputTextId').focus();
 			    	 }
 			     }    
 			});
@@ -37,7 +38,11 @@
 						    "_message":""+$('#inputTextId').val()},
 					  function(data) {
 						  if(!data.success) {
-		                    	alert('发送失败！原因：'+data.message);
+							  	if(data.message == "NOT_LOGIN") {
+							  		window.location.href="/login.html";
+							  	} else {
+		                    		alert('发送失败！原因：'+data.message);
+							  	}
 		                   } else {
 		                	   $('#inputTextId').val("");
 		                   }
@@ -47,7 +52,7 @@
 		}
 		
 		function getmaxId() {
-			return maxId;
+			return versionId;
 		}
 		
 		function getMessageId() {
@@ -59,7 +64,7 @@
                 type:"GET",      
                 dataType:"json",      
                 url:"/pull",
-                data:{"_appId":100001,"_typeId":1,"_unqId":uniqueId,"MXID":getmaxId(),"msgId":getMessageId()},
+                data:{"_appId":100001,"_typeId":1,"_unqId":uniqueId,"vId":getmaxId(),"msgId":getMessageId()},
                 timeout:35000,
                 success:function(data,textStatus){
                     if(data.success){
@@ -81,7 +86,7 @@
 	    		  				}
 	                    	}	
 	                    	maxMessageId = data.data[data.data.length-1].messageId;
-		  					maxId = data.data[data.data.length-1].id;
+	                    	versionId = data.data[data.data.length-1].id;
                     	}		
                     } else {
                     }   

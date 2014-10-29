@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.jetty.continuation.Continuation;
 import org.eclipse.jetty.continuation.ContinuationSupport;
+import org.springframework.web.bind.ServletRequestUtils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.doorcii.beans.AppConfig;
@@ -32,7 +33,7 @@ public class ChatManagerImpl implements ChatManager {
 			}
 			
 			/** 组装基本continuation 参数**/
-			assembleContinuation(continuation,appConf,response);
+			assembleContinuation(continuation,appConf,response,request);
 			
 			System.out.println("connection suspend..");
 			/** hold住连接**/
@@ -77,10 +78,13 @@ public class ChatManagerImpl implements ChatManager {
 		response.getWriter().flush();
 	}
 	
-	private void assembleContinuation(final Continuation continuation,AppConfig appConf,HttpServletResponse response) {
+	
+	private void assembleContinuation(final Continuation continuation,AppConfig appConf,
+			HttpServletResponse response,HttpServletRequest request) throws Exception {
 		continuation.setTimeout(EXPIRED_TIME);
 		continuation.suspend(response);
 		continuation.setAttribute(AppConfig.APPCONFIG, appConf);
+		continuation.setAttribute(AppConfig.VERSION_ID, ServletRequestUtils.getLongParameter(request,AppConfig.VERSION_ID,0L));
 	}
 
 	private ChatMsg getTimeoutMsg(HttpServletRequest request) {

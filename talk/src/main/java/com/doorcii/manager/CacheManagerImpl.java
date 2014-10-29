@@ -65,7 +65,6 @@ public class CacheManagerImpl implements CacheManager {
 
 	@Override
 	public Long getIncrValue(AppConfig appConf, String key) throws Exception {
-		
 		Long value = longCounterTemplate.opsForValue().increment(appConf.getAppId()+"_"+appConf.getTypeId()+"_"+COUNTER+key,0);
 		return value==null?0L:value;
 	}

@@ -1,7 +1,7 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-		<title>消息展示页面</title>
+		<title>Talk In Time</title>
 		<link href="css/bootstrap.min.css" media="all" rel="stylesheet" type="text/css">
 		<link href="css/style.css" media="all" rel="stylesheet" type="text/css">
 		<script type="text/javascript" src="js/jquery-1.8.1.min.js"></script>
@@ -20,8 +20,8 @@
 			  sendMsg();
 			}); 
 			$('#inputTextId').focus();
-			$(document).keydown(function(enent){
-			     if(event.which==13){
+			$(document).keydown(function(event){
+			     if(event.keyCode==13){
 			    	 if($('#inputTextId').val() != "") {
 			    		 $('.JInputButton').click();
 			    		 $('#inputTextId').focus();
@@ -64,7 +64,7 @@
                 type:"GET",      
                 dataType:"json",      
                 url:"/pull",
-                data:{"_appId":100001,"_typeId":1,"_unqId":uniqueId,"vId":getmaxId(),"msgId":getMessageId()},
+                data:{"_appId":100001,"_typeId":1,"_unqId":uniqueId,"vId":getmaxId(),"msgId":getMessageId(),"timestamp":(new Date()).valueOf()},
                 timeout:35000,
                 success:function(data,textStatus){
                     if(data.success){

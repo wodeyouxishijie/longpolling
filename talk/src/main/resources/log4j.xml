@@ -12,6 +12,12 @@
 			 <param name="ConversionPattern" value="%d [%X{requestURIWithQueryString}] %-5p %c{2} - %m%n"/>
 		</layout>
 	</appender>
+	
+	<appender name="CONSOLE-LOG" class="org.apache.log4j.ConsoleAppender">    
+		<layout class="org.apache.log4j.PatternLayout">    
+			<param name="ConversionPattern" value="%d{yyy-MM-dd HH:mm:ss} [%-5p] %c {%F:%L} - %m%n" />    
+		</layout>    
+	</appender>
  
  	<appender name="SPRING-LOG" class="org.apache.log4j.DailyRollingFileAppender">  
 		<param name="File" value="${log4j.logRoot}/spring-debug.log" />
@@ -30,9 +36,10 @@
  	<logger name="com.doorcii" additivity="false">
         <level value="INFO"/>
         <appender-ref ref="PROJECT-LOG"/>
+        <appender-ref ref="CONSOLE-LOG" />
     </logger>
-    
 	<root>
 		<appender-ref ref="PROJECT-LOG"/>	
+		<appender-ref ref="CONSOLE-LOG" /> 
 	</root>
 </log4j:configuration>

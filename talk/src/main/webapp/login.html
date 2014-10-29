@@ -8,19 +8,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">  
   <title>Talk In Time</title>
   <link rel="stylesheet" href="css/login.css">
+  <script type="text/javascript" src="js/jquery-1.8.1.min.js"></script>
+  <script type="text/javascript" src="js/jquery.cookie.js"></script>
   <!--[if lt IE 9]><script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 </head>
+<script type="text/javascript">
+	$(document).ready(function(){  
+		if($.cookie('_rm_') && $.cookie('_rm_') == '1') {
+			$('#remember_me').attr('checked','checked');
+		}
+		if($.cookie('_un_') && $.cookie('_un_') != '') {
+			$('#usernameId').val($.cookie('_un_'));
+		}
+		if($.cookie('_pw_') && $.cookie('_pw_') != '') {
+			$('#passwordId').val($.cookie('_pw_'));
+		}
+	});
+</script>
 <body>
   <section class="container">
     <div class="login">
       <h1>Login</h1>
       <form method="post" action="/signIn">
-        <p><input type="text" name="_user_name" value="" placeholder="Username "></p>
-        <p><input type="password" name="_password" value="" placeholder="Password"></p>
+        <p><input type="text" name="_user_name" id='usernameId' value="" placeholder="Username "></p>
+        <p><input type="password" name="_password" id="passwordId" value="" placeholder="Password"></p>
         <p class="remember_me">
           <label>
-            <input type="checkbox" name="remember_me" id="remember_me">
-            Remember me on this computer
+            <input type="checkbox" name="_remember_me" id="remember_me" value="1">
+                                     在这台电脑上记住我
           </label>
         </p>
         <p class="submit"><input type="submit" name="commit" value="登陆"></p>
@@ -28,7 +43,7 @@
     </div>
 
     <div class="login-help">
-      <p>不想登陆注册? <a href="#">直接点我去看直播</a>.</p>
+      <p>不想登陆注册? <a href="cometd.html">直接点我去看直播</a>.</p>
     </div>
   </section>
 

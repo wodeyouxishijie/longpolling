@@ -3,6 +3,7 @@ package com.doorcii.servlet;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,6 +27,8 @@ public class LoginServlet extends HttpServlet {
 	
 	public static final String PASSWORD = "_password";
 
+	public static final String REMEMBER = "_remember_me";
+	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -48,6 +51,7 @@ public class LoginServlet extends HttpServlet {
 				CacheManager cacheManger = (CacheManager)ctx.getBean("cacheManager");
 				cacheManger.setUser(userInfo);
 				request.getSession().setAttribute(AppConfig.USER_KEY, userInfo);
+				writeCookie(ServletRequestUtils.getStringParameter(request,REMEMBER)!=null ,resp,username,password);
 				resp.sendRedirect("/cometd.html");
 				return;
 			} else {
@@ -69,5 +73,17 @@ public class LoginServlet extends HttpServlet {
 		this.doPost(req, resp);
 	}
 	
+	private void writeCookie(boolean write,HttpServletResponse resp,String username,String password) {
+		int expire = write?30*24*60*60:-1;
+		Cookie remeberCookie = new Cookie("_rm_",write?"1":null);
+		remeberCookie.setMaxAge(expire);
+		resp.addCookie(remeberCookie);
+		Cookie userCookie = new Cookie("_un_",write?username:null);
+		resp.addCookie(userCookie);
+		userCookie.setMaxAge(expire);
+		Cookie pwdCookie = new Cookie("_pw_",write?password:null);
+		resp.addCookie(pwdCookie);
+		pwdCookie.setMaxAge(expire);
+	}
 	
 }

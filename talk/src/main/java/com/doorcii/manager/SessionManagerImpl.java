@@ -80,11 +80,12 @@ public class SessionManagerImpl implements SessionManager {
 					Continuation continuation = entry.getValue();
 					if(continuation.isSuspended()) {
 						Long vId = (Long)continuation.getAttribute(AppConfig.VERSION_ID);
+						String userIds = (String)continuation.getAttribute(AppConfig.USER_ID);
 						/**
 						 * 当当前版本号大于已有版本号立即返回
 						 */
 						if(null != vId && versionId > vId) {
-							if(request.getSession().getId().equals(entry.getKey())) {
+							if(request.getSession().getId().equals(entry.getKey()) || (null != userIds && userIds.equals(userId))) {
 								message.setSelf(true);
 							} else {
 								message.setSelf(false);

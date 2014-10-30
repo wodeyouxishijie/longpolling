@@ -56,14 +56,14 @@ public class ChatManagerImpl implements ChatManager {
 		}
 		UserInfo userInfo = (UserInfo)request.getSession().getAttribute(AppConfig.USER_KEY);
 		/** 点对点发送时设置该参数，暂时先不支持，内存查找方案还没想好  **/
-		String targetUserId = request.getParameter("_tarUId");
 		String message = request.getParameter("_message");
 		ChatMsg cm = new ChatMsg();
 		cm.setMsg(message);
 		cm.setUserId(userInfo.getUserId());
 		cm.setUserNick(userInfo.getNickName());
 		cm.setAvatar(userInfo.getAvatar());
-		sessionManager.releaseOneId(appConf, targetUserId, cm, request);
+		
+		sessionManager.releaseOneId(appConf, userInfo.getUserId(), cm, request);
 		responseOK(appConf,response);
 		return null;
 	}
@@ -85,6 +85,8 @@ public class ChatManagerImpl implements ChatManager {
 		continuation.suspend(response);
 		continuation.setAttribute(AppConfig.APPCONFIG, appConf);
 		continuation.setAttribute(AppConfig.VERSION_ID, ServletRequestUtils.getLongParameter(request,AppConfig.VERSION_ID,0L));
+		UserInfo userInfo = (UserInfo)request.getSession().getAttribute(AppConfig.USER_KEY);
+		continuation.setAttribute(AppConfig.USER_ID, null ==userInfo?null:userInfo.getUserId());
 	}
 
 	private ChatMsg getTimeoutMsg(HttpServletRequest request) {

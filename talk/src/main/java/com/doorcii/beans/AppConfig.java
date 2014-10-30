@@ -17,6 +17,8 @@ public class AppConfig {
 	
 	public static final String VERSION_ID = "vId";
 	
+	public static final String USER_ID = "uId";
+	
 	public static final String MESSAGE_MAX_ID = "msgId";
 	
 	public static final String USER_KEY = "_user_";

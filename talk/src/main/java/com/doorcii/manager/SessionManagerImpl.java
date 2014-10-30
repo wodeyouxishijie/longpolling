@@ -170,6 +170,7 @@ public class SessionManagerImpl implements SessionManager {
 		Continuation continuation = sessionPool.getContinuation(AppConfig.buildAndCheck(request),request.getSession().getId());
 		if(null != continuation ) {
 			timeout(continuation,msg);
+			continuation = null;
 		}
 	}
 	

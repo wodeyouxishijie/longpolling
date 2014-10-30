@@ -6,4 +6,6 @@ public interface UserDAO {
 	
 	public UserInfo getUserById(String userId,String password) throws Exception;
 	
+	public UserInfo getUserById(String userId) throws Exception;
+	
 }

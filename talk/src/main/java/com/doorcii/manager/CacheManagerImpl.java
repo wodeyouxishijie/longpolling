@@ -3,17 +3,21 @@ package com.doorcii.manager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.data.redis.core.RedisTemplate;
 
 import com.doorcii.beans.AppConfig;
 import com.doorcii.beans.UserInfo;
+import com.doorcii.ibatis.UserDAO;
 
 public class CacheManagerImpl implements CacheManager {
 	
 	private RedisTemplate<String,Long>  longCounterTemplate; 
 	
 	private RedisTemplate<String,UserInfo>  userTemplate;  
+	
+	private UserDAO userDAO;
 	
 	private static final String USER_ARE = "_user_info_";
 	
@@ -50,12 +54,20 @@ public class CacheManagerImpl implements CacheManager {
 
 	@Override
 	public UserInfo getUser(String userId) throws Exception {
-		return userTemplate.opsForValue().get(USER_ARE+userId);
+		UserInfo userInfo = userTemplate.opsForValue().get(USER_ARE+userId);
+		if(null != userInfo) {
+			UserInfo userPersist = userDAO.getUserById(userId);
+			if(null != userPersist) {
+				this.setUser(userPersist);
+				return userPersist;
+			}
+		}
+		return userInfo;
 	}
 
 	@Override
 	public void setUser(UserInfo user) throws Exception {
-		userTemplate.opsForValue().set(USER_ARE+user.getUserId(), user);
+		userTemplate.opsForValue().set(USER_ARE+user.getUserId(), user,24,TimeUnit.HOURS);
 	}
 
 	@Override
@@ -76,6 +88,10 @@ public class CacheManagerImpl implements CacheManager {
 
 	public void setUserTemplate(RedisTemplate<String, UserInfo> userTemplate) {
 		this.userTemplate = userTemplate;
+	}
+
+	public void setUserDAO(UserDAO userDAO) {
+		this.userDAO = userDAO;
 	}
 
 }

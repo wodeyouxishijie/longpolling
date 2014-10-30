@@ -17,4 +17,8 @@ public class UserDAOImpl extends SqlMapClientDaoSupport  implements UserDAO {
 		return (UserInfo)this.getSqlMapClientTemplate().queryForObject("talk.queryUserInfo", param);
 	}
 
+	@Override
+	public UserInfo getUserById(String userId) throws Exception {
+		return (UserInfo)this.getSqlMapClientTemplate().queryForObject("talk.queryUserInfoById", userId);
+	}
 }

@@ -11,6 +11,7 @@ import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
 
+
 /**
  * @author Jacky
  * 2014-5-9
@@ -35,41 +36,41 @@ public class GroupSequenceDAO implements SequenceDAO {
 	private int startNum = 100;
 	
 	/**
-	 * ���Դ
+	 * 数据源
 	 */
 	private DataSource dataSource;
 
 	/**
-	 * ����Ӧ����
+	 * 自适应开关
 	 */
 	private boolean adjust = DEFAULT_ADJUST;
 	/**
-	 * ���Դ���
+	 * 重试次数
 	 */
 	private int retryTimes = DEFAULT_RETRY_TIMES;
 
 	/**
-	 * �ڲ���
+	 * 内步长
 	 */
 	private int innerStep = DEFAULT_INNER_STEP;
 
 	/**
-	 * �������ڵı���
+	 * 序列所在的表名
 	 */
 	private String tableName = DEFAULT_TABLE_NAME;
 
 	/**
-	 * �洢������Ƶ�����
+	 * 存储序列名称的列名
 	 */
 	private String nameColumnName = DEFAULT_NAME_COLUMN_NAME;
 
 	/**
-	 * �洢����ֵ������
+	 * 存储序列值的列名
 	 */
 	private String valueColumnName = DEFAULT_VALUE_COLUMN_NAME;
 
 	/**
-	 * �洢����������ʱ�������
+	 * 存储序列最后更新时间的列名
 	 */
 	private String gmtModifiedColumnName = DEFAULT_GMT_MODIFIED_COLUMN_NAME;
 
@@ -84,8 +85,8 @@ public class GroupSequenceDAO implements SequenceDAO {
 	}
 
 	/**
-	 * ��鲢����ĳ��sequence 1�����sequece�����ڣ�����ֵ������ʼ��ֵ 2������Ѿ����ڣ������ص����������
-	 * 3������Ѿ����ڣ������ص���
+	 * 检查并初试某个sequence 1、如果sequece不存在，插入值，并初始化值 2、如果已经存在，但有重叠，重新生成
+	 * 3、如果已经存在，且无重叠。
 	 * 
 	 * @throws SequenceException
 	 */
@@ -107,8 +108,8 @@ public class GroupSequenceDAO implements SequenceDAO {
 			if (item == 0) {
 				this.adjustInsert(name);
 			}
-		} catch (SQLException e) {// �̵�SQL�쳣
-			log.error("��ֵУ�������Ӧ����г���.", e);
+		} catch (SQLException e) {// 吞掉SQL异常
+			log.error("初值校验和自适应过程中出错.", e);
 			throw e;
 		} finally {
 			closeResultSet(rs);
@@ -122,7 +123,7 @@ public class GroupSequenceDAO implements SequenceDAO {
 	}
 
 	/**
-	 * ����
+	 * 更新
 	 * @param index
 	 * @param value
 	 * @param name
@@ -131,7 +132,7 @@ public class GroupSequenceDAO implements SequenceDAO {
 	 */
 	private void adjustUpdate(long value, String name)
 			throws SequenceException, SQLException {
-		long newValue = value + innerStep;// ���ó��µĵ���ֵ
+		long newValue = value + innerStep;// 设置成新的调整值
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		try {
@@ -147,14 +148,14 @@ public class GroupSequenceDAO implements SequenceDAO {
 						"faild to auto adjust init value at  " + name
 								+ " update affectedRow =0");
 			}
-			log.info("���³�ֵ�ɹ�!" + "sequence Name��"+ name + "���¹�̣�" + value + "-->" + newValue);
-		} catch (SQLException e) { // �Ե�SQL�쳣����Sequence�쳣
+			log.info("更新初值成功!" + "sequence Name："+ name + "更新过程：" + value + "-->" + newValue);
+		} catch (SQLException e) { // 吃掉SQL异常，抛Sequence异常
 			log.error(
-					"����SQLException,���³�ֵ����Ӧʧ�ܣ�sequence Name��" + name
-							+ "���¹�̣�" + value + "-->" + newValue, e);
+					"由于SQLException,更新初值自适应失败！sequence Name：" + name
+							+ "更新过程：" + value + "-->" + newValue, e);
 			throw new SequenceException(
-					"����SQLException,���³�ֵ����Ӧʧ�ܣ�sequence Name��" + name
-					+ "���¹�̣�" + value + "-->" + newValue, e);
+					"由于SQLException,更新初值自适应失败！sequence Name：" + name
+					+ "更新过程：" + value + "-->" + newValue, e);
 		} finally {
 			closeStatement(stmt);
 			stmt = null;
@@ -164,7 +165,7 @@ public class GroupSequenceDAO implements SequenceDAO {
 	}
 
 	/**
-	 * ������ֵ
+	 * 插入新值
 	 * 
 	 * @param index
 	 * @param name
@@ -190,14 +191,14 @@ public class GroupSequenceDAO implements SequenceDAO {
 						"faild to auto adjust init value at  " + name
 								+ " update affectedRow =0");
 			}
-			log.info("name:" + name + "�����ֵ:"+ name + "value:" + newValue);
+			log.info("name:" + name + "插入初值:"+ name + "value:" + newValue);
 
-		} catch (SQLException e) { // �Ե�SQL�쳣����sequence�쳣
+		} catch (SQLException e) { // 吃掉SQL异常，抛sequence异常
 			log.error(
-					"����SQLException,�����ֵ����Ӧʧ�ܣ�sequence Name��" + name
+					"由于SQLException,插入初值自适应失败！sequence Name：" + name
 							+ "   value:" + newValue, e);
 			throw new SequenceException(
-					"����SQLException,�����ֵ����Ӧʧ�ܣ�sequence Name��" + name
+					"由于SQLException,插入初值自适应失败！sequence Name：" + name
 							+ "   value:" + newValue, e);
 		} finally {
 			closeResultSet(rs);
@@ -211,8 +212,8 @@ public class GroupSequenceDAO implements SequenceDAO {
 
 	public SequenceRange nextRange(String name) throws SequenceException {
 		if (name == null) {
-			log.error("������Ϊ�գ�");
-			throw new IllegalArgumentException("������Ʋ���Ϊ��");
+			log.error("序列名为空！");
+			throw new IllegalArgumentException("序列名称不能为空");
 		}
 
 		long oldValue;
@@ -227,7 +228,7 @@ public class GroupSequenceDAO implements SequenceDAO {
 
 		for(int i=0;i<retryTimes;i++)
 		{
-			// ��ѯ
+			// 查询
 			try {
 				conn = dataSource.getConnection();
 				stmt = conn.prepareStatement(getSelectSql());
@@ -257,7 +258,7 @@ public class GroupSequenceDAO implements SequenceDAO {
 				}
 				newValue = oldValue + innerStep;
 			} catch (SQLException e) {
-				log .error("ȡ��Χ�����--��ѯ���?name:" + name,e);
+				log .error("取范围过程中--查询出错！name:" + name,e);
 				continue;
 			} finally {
 				closeResultSet(rs);
@@ -282,7 +283,7 @@ public class GroupSequenceDAO implements SequenceDAO {
 				}
 
 			} catch (SQLException e) {
-				log .error("ȡ��Χ�����--���³��?name:" + name,e);
+				log .error("取范围过程中--更新出错！name:" + name,e);
 				continue;
 			} finally {
 				closeStatement(stmt);
@@ -295,7 +296,7 @@ public class GroupSequenceDAO implements SequenceDAO {
 				return new SequenceRange(oldValue + 1, oldValue
 						+ innerStep);
 		}
-		log.error("˵�����Դ�������ã�������"+this.retryTimes+"�κ���Ȼʧ��!");
+		log.error("说有数据源都不可用！且重试"+this.retryTimes+"次后，仍然失败!");
 		throw new SequenceException("dataSource faild to get value!");
 	}
 

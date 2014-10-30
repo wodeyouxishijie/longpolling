@@ -21,4 +21,9 @@
         SELECT <include refid="talk.userInfo_columns"/>
         FROM USER_INFO WHERE USERID=#userId# and PASSWORD=#password#
     </select>
+    
+    <select id="talk.queryUserInfoById" resultMap="talk.userInfo" >  
+        SELECT <include refid="talk.userInfo_columns"/>
+        FROM USER_INFO WHERE USERID=#userId# LIMIT 1
+    </select>
 </sqlMap>

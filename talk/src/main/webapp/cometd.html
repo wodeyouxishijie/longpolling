@@ -7,6 +7,13 @@
 		<meta name="viewport" content="width=device-width, maximum-scale=1.0, initial-scale=1, user-scalable=no">
 		<script type="text/javascript" src="js/jquery-1.8.1.min.js"></script>
 	</head>
+	 <style>
+         @media screen and (min-width: 600px) {
+              #talk-window {
+                     height:600px;
+              }
+         }
+    </style>
 	<script>
 		var versionId = 0;
 		var max_rows = 20;
@@ -67,7 +74,7 @@
                 type:"GET",      
                 dataType:"json",      
                 url:"/pull",
-                data:{"_appId":100001,"_typeId":1,"_unqId":uniqueId,"vId":getmaxId(),"msgId":getMessageId(),"timestamp":(new Date()).valueOf()},
+                data:{"_appId":appId,"_typeId":typeId,"_unqId":uniqueId,"vId":getmaxId(),"msgId":getMessageId(),"timestamp":(new Date()).valueOf()},
                 timeout:35000,
                 success:function(data,textStatus){
                     if(data.success){
@@ -110,7 +117,7 @@
 	<!-- container -->
 		<div class="">
 			 <div class="col-md-12">
-				<div class="widget-container scrollable chat" style="height: 600px;">
+				<div class="widget-container scrollable chat" id="talk-window">
 				  <div class="heading">
 					<i class="icon-comments"></i>聊天窗口<i class="icon-smile pull-right"></i>
 				  </div>

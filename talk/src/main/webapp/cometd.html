@@ -35,7 +35,8 @@
 					  {"_appId":appId,
 						    "_typeId":typeId,
 						    "_unqId":uniqueId,
-						    "_message":""+$('#inputTextId').val()},
+						    "_message":""+$('#inputTextId').val(),
+						    "timestamp":(new Date()).valueOf()},
 					  function(data) {
 						  if(!data.success) {
 							  	if(data.message == "NOT_LOGIN") {

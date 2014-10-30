@@ -18,15 +18,16 @@
 			$('.JInputButton').bind('click',function() {
 			  if($.trim($('#inputTextId').val()) == "") return;
 			  sendMsg();
+			  $('#inputTextId').focus();
 			}); 
 			$('#inputTextId').focus();
 			$(document).keydown(function(event){
 			     if(event.keyCode==13){
 			    	 if($('#inputTextId').val() != "") {
 			    		 $('.JInputButton').click();
-			    		 $('#inputTextId').focus();
 			    	 }
-			     }    
+			    	 return false;
+			     }
 			});
 		});  
 		

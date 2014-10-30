@@ -12,7 +12,7 @@
 	
 	<bean id="chatManager" class="com.doorcii.manager.ChatManagerImpl"></bean>
 	<bean id="sessionManager" class="com.doorcii.manager.SessionManagerImpl"></bean>
-	<bean id="sessionPool" class="com.doorcii.manager.UserSessionPool"></bean>
+	<bean id="sessionPool" class="com.doorcii.manager.UserSessionPool" init-method="init"></bean>
 	<bean id="messageReplyer" class="com.doorcii.manager.MessageReplyerImpl"></bean>
 	<bean id="cacheManager" class="com.doorcii.manager.CacheManagerImpl"></bean>
 	<bean id="messageAdmin" class="com.doorcii.manager.MessageAdminImpl"></bean>

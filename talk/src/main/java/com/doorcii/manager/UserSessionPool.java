@@ -2,11 +2,16 @@ package com.doorcii.manager;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.log4j.Logger;
 import org.eclipse.jetty.continuation.Continuation;
 
 import com.doorcii.beans.AppConfig;
+import com.doorcii.utils.AppIdCenter;
 
 /**
  * 还是犹豫了一下
@@ -16,7 +21,30 @@ import com.doorcii.beans.AppConfig;
  */
 public class UserSessionPool implements SessionPool {
 	
+	private static final Logger logger = Logger.getLogger(CacheManagerImpl.class);
+	
 	private Map<Long,Map<Integer,Map<String,Map<String,Continuation>>>> contiMap = new HashMap<Long, Map<Integer,Map<String,Map<String,Continuation>>>>(100);
+	
+	private Timer timer = null;
+	
+	public void init() {
+		timer = new Timer(true);
+		timer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				Map<Integer, Map<String, Map<String, Continuation>>> appMap = contiMap.get(AppIdCenter.FIRST_APP.getAppId());
+				if(null != appMap) {
+					Map<String, Map<String, Continuation>> typeMap = appMap.get(1);
+					if(null != typeMap) {
+						for(Entry<String, Map<String, Continuation>> entry : typeMap.entrySet()) {
+							logger.info("***uniqueId="+entry.getKey()+"****count="+(entry.getValue()==null?0:entry.getValue().size())+"*****");
+						}
+					}
+				}
+			}
+			
+		}, 1000,5000);
+	}
 	
 	/**
 	 * continuation 新增

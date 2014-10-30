@@ -55,9 +55,7 @@ public class LoginServlet extends HttpServlet {
 				resp.sendRedirect("/cometd.html");
 				return;
 			} else {
-				jr.setSuccess(false);
-				jr.setMessage("用户名或者密码错误！");
-				resp.getWriter().write(JSONObject.toJSONString(jr));
+				resp.sendRedirect("/login.html");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

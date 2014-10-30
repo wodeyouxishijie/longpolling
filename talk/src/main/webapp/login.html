@@ -16,12 +16,12 @@
 	$(document).ready(function(){  
 		if($.cookie('_rm_') && $.cookie('_rm_') == '1') {
 			$('#remember_me').attr('checked','checked');
-		}
-		if($.cookie('_un_') && $.cookie('_un_') != '') {
-			$('#usernameId').val($.cookie('_un_'));
-		}
-		if($.cookie('_pw_') && $.cookie('_pw_') != '') {
-			$('#passwordId').val($.cookie('_pw_'));
+			if($.cookie('_un_') && $.cookie('_un_') != '') {
+				$('#usernameId').val($.cookie('_un_'));
+			}
+			if($.cookie('_pw_') && $.cookie('_pw_') != '') {
+				$('#passwordId').val($.cookie('_pw_'));
+			}
 		}
 	});
 </script>

@@ -82,13 +82,18 @@
 		
 		function sendMsg() {
 			$('#JInputButton').attr("disabled","disabled");
+			var inputText = $('#inputTextId').val();
+			if(inputText.length > 128) {
+				inputText = inputText.substring(0,128);
+			}
 			 $.post("/send", 
 					  {"_appId":appId,
 						    "_typeId":typeId,
 						    "_unqId":uniqueId,
-						    "_message":""+$('#inputTextId').val(),
+						    "_message":inputText,
 						    "timestamp":(new Date()).valueOf()},
 					  function(data) {
+						  $('#JInputButton').attr("disabled","");  	
 						  if(!data.success) {
 							  	if(data.message == "NOT_LOGIN") {
 							  		window.location.href="/login.html";
@@ -98,7 +103,6 @@
 		                   } else {
 		                	   $('#inputTextId').val("");
 		                   }
-						  $('#JInputButton').attr("disabled","");
 				  	  },
 				  	  "json"
 			  );

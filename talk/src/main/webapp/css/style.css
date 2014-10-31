@@ -1626,7 +1626,8 @@ th:active {
           .chat .widget-content ul li .bubble p.message {
             font-size: 0.95em;
             margin-bottom: 12px;
-            color: #333333; }
+            color: #333333; 
+            word-wrap: break-word;}
           .chat .widget-content ul li .bubble .time {
             font-size: 0.8em;
             color: #888888;

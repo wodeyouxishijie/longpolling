@@ -3,6 +3,8 @@ package com.doorcii.manager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.continuation.Continuation;
 import org.eclipse.jetty.continuation.ContinuationSupport;
 import org.springframework.web.bind.ServletRequestUtils;
@@ -58,14 +60,20 @@ public class ChatManagerImpl implements ChatManager {
 		/** 点对点发送时设置该参数，暂时先不支持，内存查找方案还没想好  **/
 		String message = request.getParameter("_message");
 		ChatMsg cm = new ChatMsg();
-		cm.setMsg(message);
+		cm.setMsg(filterHtmlPutFace(message));
 		cm.setUserId(userInfo.getUserId());
 		cm.setUserNick(userInfo.getNickName());
 		cm.setAvatar(userInfo.getAvatar());
-		
 		sessionManager.releaseOneId(appConf, userInfo.getUserId(), cm, request);
 		responseOK(appConf,response);
 		return null;
+	}
+	
+	private String filterHtmlPutFace(String message) {
+		if(StringUtils.isNotBlank(message)) {
+			message = StringEscapeUtils.escapeHtml4(message);
+		}
+		return message;
 	}
 	
 	private void responseOK(AppConfig appConf,HttpServletResponse response) throws Exception {

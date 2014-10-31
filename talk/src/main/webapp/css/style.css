@@ -1596,7 +1596,7 @@ th:active {
         position: relative; }
         .chat .widget-content ul li:last-child {
           margin-bottom: 0; }
-        .chat .widget-content ul li img {
+        .chat .widget-content ul li .avatar-l {
           position: absolute;
           bottom: -2px;
           left: 0;
@@ -1634,7 +1634,10 @@ th:active {
         .chat .widget-content ul li.current-user {
           padding-right: 40px;
           padding-left: 80px; }
-          .chat .widget-content ul li.current-user img {
+          .chat .widget-content ul li.current-user .avatar-r {
+			position: absolute;
+            bottom: -2px;
+            border-radius: 50%;
             right: 0;
             left: auto; }
           .chat .widget-content ul li.current-user .bubble {

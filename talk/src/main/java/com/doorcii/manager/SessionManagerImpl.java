@@ -22,6 +22,7 @@ import com.doorcii.beans.JSONReturnMsg;
 import com.doorcii.beans.Message;
 import com.doorcii.beans.UserInfo;
 import com.doorcii.ibatis.MessageDAO;
+import com.doorcii.utils.FaceUtil;
 import com.doorcii.utils.MessageReplyUtil;
 
 public class SessionManagerImpl implements SessionManager {
@@ -73,6 +74,7 @@ public class SessionManagerImpl implements SessionManager {
 			Long versionId = cacheManager.incrKey(appConf, AppConfig.VERSION_ID);
 			message.setId(versionId);
 			message.setMessageId(msg.getMessageId());
+			message.setMsg(FaceUtil.convertFaceImg(message.getMsg()));
 			if(null != sessionMap) {
 				Iterator<Entry<String, Continuation>> iter = sessionMap.entrySet().iterator();
 				while(iter.hasNext()) {
@@ -123,7 +125,7 @@ public class SessionManagerImpl implements SessionManager {
 			Set<String> userSet = new HashSet<String>();
 			for(Message message : messageList) {
 				ChatMsg cm = new ChatMsg();
-				cm.setMsg(message.getMsg());
+				cm.setMsg(FaceUtil.convertFaceImg(message.getMsg()));
 				cm.setId(versionId);
 				cm.setMessageId(message.getMessageId());
 				cm.setUserId(message.getUserId());

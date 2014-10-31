@@ -4,8 +4,10 @@
 		<title>Talk In Time</title>
 		<link href="css/bootstrap.min.css" media="all" rel="stylesheet" type="text/css">
 		<link href="css/style.css" media="all" rel="stylesheet" type="text/css">
+		<link rel="stylesheet" media="all" href="css/rl_exp.css" />
 		<meta name="viewport" content="width=device-width, maximum-scale=1.0, initial-scale=1, user-scalable=no">
 		<script type="text/javascript" src="js/jquery-1.8.1.min.js"></script>
+		<script type="text/javascript" src="js/rl_exp.js"></script>
 	</head>
 	 <style>
          @media screen and (min-width: 600px) {
@@ -15,6 +17,7 @@
          }
          
          .file-input-wrapper{
+         	top:2px;
 			float: left;
 			height: 33px;
 			background:url('../images/photo.png');
@@ -41,6 +44,17 @@
 		    left:0px;
 		    top: 0px;
 		}
+		.smile {
+			position: absolute;
+			top: 10px;
+			right: 65px;
+			margin: 0;
+			border: 0;
+			background: transparent;
+			color: #007aff;
+			font-weight: 600;
+			font-size: 14px;
+		}
     </style>
 	<script>
 		var versionId = 0;
@@ -56,7 +70,6 @@
 			  sendMsg();
 			  $('#inputTextId').focus();
 			}); 
-			$('#inputTextId').focus();
 			$(document).keydown(function(event){
 			     if(event.keyCode==13){
 			    	 if($('#inputTextId').val() != "") {
@@ -111,7 +124,7 @@
                     	if(data.data && data.data.length > 0) {
 	                    	for(i=data.data.length-1;i >=0 ;i-- ) {
 	                    		var obj = $('<li class="'+(data.data[i].self==true?'current-user':'')+
-	                    				'"> <img width="30" height="30" src="'+data.data[i].avatar
+	                    				'"> <img width="30" height="30" class="'+(data.data[i].self==true?'avatar-r':'avatar-l')+'" src="'+data.data[i].avatar
 	                    				+'" /> <div class="bubble"> <a class="user-name" href="#">'+data.data[i].userNick
 	                    				+'</a> <p class="message">'+data.data[i].msg+' </p> <p class="time"> <strong>今天 </strong>'
 	                    				+data.data[i].timeStr+' </p> </div> </li>');
@@ -174,6 +187,20 @@
 					</div>
 					<div style="margin-left:43px;">
 						<input class="form-control" id='inputTextId' width="100%"  placeholder="Write your message here..." type="text">
+						<span  class="smile">
+							<a href="javascript:void(0)" id="rl_exp_btn"><img alt="小图标" src="images/18FC71062E96FA5CDD6F1421CC83D6F0.gif" width="30px;"></a>
+						</span>
+						<div class="rl_exp" id="rl_bq" style="display:none;width:100%">
+							<ul class="rl_exp_tab clearfix">
+								<li><a href="javascript:void(0);" class="selected">默认</a></li>
+								<li><a href="javascript:void(0);">暴走漫画</a></li>
+							</ul>
+							<ul class="rl_exp_main clearfix rl_selected"></ul>
+							<ul class="rl_exp_main clearfix" style="display:none;"></ul>
+							<ul class="rl_exp_main clearfix" style="display:none;"></ul>
+							<ul class="rl_exp_main clearfix" style="display:none;"></ul>
+							<a href="javascript:void(0);" class="close">×</a> 
+						</div>
 						<input type="submit" class='JInputButton'  value="Send">
 					</div>
 				  </div>

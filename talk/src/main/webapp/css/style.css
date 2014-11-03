@@ -3120,3 +3120,49 @@ body.fourofour {
       left: 20px; }
     ul.timeline.animated li.active:nth-child(odd) .timeline-content {
       left: 0; } }
+      
+       @media screen and (min-width: 600px) {
+              #talk-window {
+                     height:600px;
+              }
+         }
+         
+         .file-input-wrapper{
+         	top:2px;
+			float: left;
+			height: 33px;
+			background:url('../images/photo.png');
+			width: 33px;
+			position:relative;
+			margin-right:10px;
+		}
+		.file-input-div{
+			text-align:center;
+			padding-top:12px;
+			font-size:15px;
+			font-weight:800
+		}
+		.inputstyle{
+		    width: 0px;
+		    height: 0px;
+		    cursor: pointer;
+		    font-size: 1px;
+		    outline: medium none;
+		    position: absolute;
+		    filter:alpha(opacity=0);
+		    -moz-opacity:0;
+		    opacity:0; 
+		    left:0px;
+		    top: 0px;
+		}
+		.smile {
+			position: absolute;
+			top: 10px;
+			right: 65px;
+			margin: 0;
+			border: 0;
+			background: transparent;
+			color: #007aff;
+			font-weight: 600;
+			font-size: 14px;
+		}

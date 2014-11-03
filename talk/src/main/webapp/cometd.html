@@ -8,158 +8,11 @@
 		<meta name="viewport" content="width=device-width, maximum-scale=1.0, initial-scale=1, user-scalable=no">
 		<script type="text/javascript" src="js/jquery-1.8.1.min.js"></script>
 		<script type="text/javascript" src="js/rl_exp.js"></script>
+		<script type="text/javascript" src="js/come.js"></script>
 	</head>
 	 <style>
-         @media screen and (min-width: 600px) {
-              #talk-window {
-                     height:600px;
-              }
-         }
-         
-         .file-input-wrapper{
-         	top:2px;
-			float: left;
-			height: 33px;
-			background:url('../images/photo.png');
-			width: 33px;
-			position:relative;
-			margin-right:10px;
-		}
-		.file-input-div{
-			text-align:center;
-			padding-top:12px;
-			font-size:15px;
-			font-weight:800
-		}
-		.inputstyle{
-		    width: 0px;
-		    height: 0px;
-		    cursor: pointer;
-		    font-size: 1px;
-		    outline: medium none;
-		    position: absolute;
-		    filter:alpha(opacity=0);
-		    -moz-opacity:0;
-		    opacity:0; 
-		    left:0px;
-		    top: 0px;
-		}
-		.smile {
-			position: absolute;
-			top: 10px;
-			right: 65px;
-			margin: 0;
-			border: 0;
-			background: transparent;
-			color: #007aff;
-			font-weight: 600;
-			font-size: 14px;
-		}
+        
     </style>
-	<script>
-		var versionId = 0;
-		var max_rows = 20;
-		var maxMessageId = 0;
-		var uniqueId = 'testId';
-		var appId = 100001;
-		var typeId = 1;
-		$(document).ready(function(){  
-			polling();
-			$('.JInputButton').bind('click',function() {
-			  if($.trim($('#inputTextId').val()) == "") return;
-			  sendMsg();
-			  $('#inputTextId').focus();
-			}); 
-			$(document).keydown(function(event){
-			     if(event.keyCode==13){
-			    	 if($('#inputTextId').val() != "") {
-			    		 $('.JInputButton').click();
-			    	 }
-			    	 return false;
-			     }
-			});
-		});  
-		
-		function sendMsg() {
-			$('#JInputButton').attr("disabled","disabled");
-			var inputText = $('#inputTextId').val();
-			if(inputText.length > 128) {
-				inputText = inputText.substring(0,128);
-			}
-			 $.post("/send", 
-					  {"_appId":appId,
-						    "_typeId":typeId,
-						    "_unqId":uniqueId,
-						    "_message":inputText,
-						    "timestamp":(new Date()).valueOf()},
-					  function(data) {
-						  $('#JInputButton').attr("disabled","");  	
-						  if(!data.success) {
-							  	if(data.message == "NOT_LOGIN") {
-							  		window.location.href="/login.html";
-							  	} else {
-		                    		alert('发送失败！原因：'+data.message);
-							  	}
-		                   } else {
-		                	   $('#inputTextId').val("");
-		                   }
-				  	  },
-				  	  "json"
-			  );
-		}
-		
-		function getmaxId() {
-			return versionId;
-		}
-		
-		function getMessageId() {
-			return maxMessageId;
-		}
-		
-		function polling() {
-			$.ajax({      
-                type:"GET",      
-                dataType:"json",      
-                url:"/pull",
-                data:{"_appId":appId,"_typeId":typeId,"_unqId":uniqueId,"vId":getmaxId(),"msgId":getMessageId(),"timestamp":(new Date()).valueOf()},
-                timeout:35000,
-                success:function(data,textStatus){
-                    if(data.success){
-                    	if(data.data && data.data.length > 0) {
-	                    	for(i=data.data.length-1;i >=0 ;i-- ) {
-	                    		var obj = $('<li class="'+(data.data[i].self==true?'current-user':'')+
-	                    				'"> <img width="30" height="30" class="'+(data.data[i].self==true?'avatar-r':'avatar-l')+'" src="'+data.data[i].avatar
-	                    				+'" /> <div class="bubble"> <a class="user-name" href="#">'+data.data[i].userNick
-	                    				+'</a> <p class="message">'+data.data[i].msg+' </p> <p class="time"> <strong>今天 </strong>'
-	                    				+data.data[i].timeStr+' </p> </div> </li>');
-	    	      				obj.css("opacity","0");
-	    	      				$('#content-ul').append(obj);
-	    	      				obj.animate({opacity:1},800);
-	    	      				var div = $("div[class='widget-content padded']");
-	    		  				div.scrollTop($("div[class='widget-content padded']")[0].scrollHeight);
-	    		  				if($("#content-ul").children().length > max_rows) {
-	    		  					$($("#content-ul").children()[0]).remove();
-	    		  					$($("#content-ul").children()[0]).remove();
-	    		  				}
-	                    	}	
-	                    	maxMessageId = data.data[data.data.length-1].messageId;
-	                    	versionId = data.data[data.data.length-1].id;
-                    	}		
-                    } else {
-                    }   
-                },      
-                
-	            error:function(XMLHttpRequest,textStatus,errorThrown){      
-                     if(textStatus=="timeout"){      
-                     }
-	            },
-	            complete:function () {
-	            	polling();
-	            }
-            });      
-		}
-		
-	</script>
 	<body style="padding:0px;">
 	<!-- container -->
 		<div class="">
@@ -187,10 +40,10 @@
 				  <div class="post-message">
 					<div class="file-input-wrapper">
 						<div class="file-input-div"></div>
-						<input type="file" class="inputstyle" name="_upload_pic"/>
+						<input type="file" class="inputstyle" id="fileId" onchange="uploadfile('fileId')" name="_upload_pic"/>
 					</div>
 					<div style="margin-left:43px;">
-						<input class="form-control" id='inputTextId' width="100%"  placeholder="Write your message here..." type="text">
+						<input class="form-control" id='inputTextId' width="100%"  placeholder="Write your message..." type="text">
 						<span  class="smile">
 							<a href="javascript:void(0)" id="rl_exp_btn"><img alt="小图标" src="images/18FC71062E96FA5CDD6F1421CC83D6F0.gif" width="30px;"></a>
 						</span>

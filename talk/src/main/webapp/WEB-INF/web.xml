@@ -25,6 +25,15 @@
   </servlet-mapping>
   
   <servlet>
+	  <servlet-name>uploadServlet</servlet-name>
+	  <servlet-class>com.doorcii.servlet.UploadServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  	  <servlet-name>uploadServlet</servlet-name>
+  	  <url-pattern>/upload</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
 	  <servlet-name>signInServlet</servlet-name>
 	  <servlet-class>com.doorcii.servlet.LoginServlet</servlet-class>
   </servlet>

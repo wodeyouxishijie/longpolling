@@ -1,8 +1,11 @@
 package com.doorcii.manager;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jetty.continuation.Continuation;
@@ -69,6 +72,27 @@ public class ChatManagerImpl implements ChatManager {
 		return null;
 	}
 	
+	@Override
+	public String sendImgMessage(List<FileItem> formItems,HttpServletRequest request,
+			HttpServletResponse response, String filePath) throws Exception {
+		AppConfig appConf = AppConfig.buildAndCheckMutiForm(formItems);
+		if(null == appConf) {
+			return "PARAM_ERROR";
+		}
+		UserInfo userInfo = (UserInfo)request.getSession().getAttribute(AppConfig.USER_KEY);
+		ChatMsg cm = new ChatMsg();
+		cm.setMsg(getImgTag(filePath));
+		cm.setUserId(userInfo.getUserId());
+		cm.setUserNick(userInfo.getNickName());
+		cm.setAvatar(userInfo.getAvatar());
+		sessionManager.releaseOneId(appConf, userInfo.getUserId(), cm, request);
+		return null;
+	}
+	
+	private String getImgTag(String filePath) {
+		return "<img src='"+filePath+"' class='radio-img' />";
+	}
+
 	private String filterHtmlPutFace(String message) {
 		if(StringUtils.isNotBlank(message)) {
 			message = StringEscapeUtils.escapeHtml4(message);

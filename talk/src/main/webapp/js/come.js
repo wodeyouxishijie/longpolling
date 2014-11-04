@@ -52,10 +52,12 @@ function sendMsg() {
 function uploadfile(fileId) {
 	$.ajaxFileUpload({  
         url:'/upload',  
-        fileElementId: fileId,    
+        fileElementId: fileId, 
+        data:{"_appId":appId,
+		    "_typeId":typeId,
+		    "_unqId":uniqueId},
         dataType:'json',         
         success:function(data, status){   
-        	
         },  
         error: function(data, status, e){ 
            alert('上传图片失败!');

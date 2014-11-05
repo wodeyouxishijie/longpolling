@@ -43,7 +43,8 @@ public class UploadServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		response.setContentType("text/json");
+		response.setContentType("text/html; charset=utf-8");
+		response.setHeader("Cache-Control", "no-cache"); 
 		UserInfo userInfo = (UserInfo)request.getSession().getAttribute(AppConfig.USER_KEY);
 		if(null == userInfo) {
 			JSONReturnMsg jr = new JSONReturnMsg();
@@ -95,8 +96,6 @@ public class UploadServlet extends HttpServlet {
 				for(String name: fileList) 
 					((ChatManager)ctx.getBean("chatManager")).sendImgMessage(formItems,request, response,name);
 			}
-			response.setContentType("text/html; charset=utf-8");
-			response.setHeader("Cache-Control", "no-cache"); 
 			JSONReturnMsg jr = new JSONReturnMsg();
 			jr.setSuccess(true);
 			response.getWriter().write(JSONObject.toJSONString(jr));

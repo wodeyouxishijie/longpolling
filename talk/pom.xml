@@ -86,37 +86,18 @@
 	<dependency>
 		<groupId>org.eclipse.jetty</groupId>
 		<artifactId>jetty-continuation</artifactId>
-		<version>7.0.0.M4</version>
-	</dependency>
-	<dependency>
-		<groupId>org.eclipse.jetty</groupId>
-		<artifactId>jetty-servlets</artifactId>
-		<version>7.0.0.M4</version>
-	</dependency>
-	<dependency>
-		<groupId>org.eclipse.jetty</groupId>
-		<artifactId>jetty-util</artifactId>
-		<version>7.5.3.v20111011</version>
+		<version>8.1.16.v20140903</version>
 	</dependency>
 	<dependency>
         <groupId>javax.servlet</groupId>
         <artifactId>javax.servlet-api</artifactId>
         <version>3.0.1</version>
-	</dependency>
+        <scope>provided</scope>
+    </dependency>
 	<dependency>
 		<groupId>com.alibaba</groupId>
 		<artifactId>fastjson</artifactId>
 		<version>1.1.41</version>
-	</dependency>
-	<dependency>
-		<groupId>org.cometd.java</groupId>
-		<artifactId>cometd-api</artifactId>
-		<version>1.1.5</version>
-	</dependency>
-	<dependency>
-		<groupId>org.cometd.java</groupId>
-		<artifactId>cometd-java-server</artifactId>
-		<version>1.1.5</version>
 	</dependency>
 	<dependency>
 	    <groupId>org.springframework</groupId>
@@ -182,18 +163,6 @@
 	    <groupId>org.springframework</groupId>
 	    <artifactId>spring-webmvc-portlet</artifactId>
 	    <version>${org.springframework.version}</version>
-	</dependency>
-	
-	<dependency>
-		<groupId>org.cometd.java</groupId>
-		<artifactId>cometd-java-client</artifactId>
-		<version>1.1.5</version>
-		<exclusions>
-			<exclusion>
-				<groupId>javax.servlet</groupId>
-				<artifactId>servlet-api</artifactId>
-			</exclusion>
-		</exclusions>
 	</dependency>
 	<!--  
 	<dependency>

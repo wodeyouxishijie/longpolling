@@ -55,7 +55,7 @@ public class LoginServlet extends HttpServlet {
 				resp.sendRedirect("cometd.html");
 				return;
 			} else {
-				resp.sendRedirect("/login.html");
+				resp.sendRedirect("login.html");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

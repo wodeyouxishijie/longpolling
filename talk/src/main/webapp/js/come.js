@@ -57,10 +57,14 @@ function uploadfile(fileId) {
 		    "_typeId":typeId,
 		    "_unqId":uniqueId},
         dataType:'json',         
-        success:function(data, status){   
+        success:function(data, status){
+        	if(data && !data.success) {
+        		if(data.message == "NOT_LOGIN") {
+			  		window.location.href = "login.html";
+			  	}
+        	}
         },  
         error: function(data, status, e){ 
-           
         }  
     });  
 }

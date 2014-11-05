@@ -22,7 +22,7 @@ DROP TABLE IF EXISTS `message`;
 CREATE TABLE `message` (
   `id` bigint(20) NOT NULL,
   `userId` varchar(32) NOT NULL,
-  `msg` varchar(128) NOT NULL,
+  `msg` varchar(256) NOT NULL,
   `createTime` bigint(20) NOT NULL,
   `type` tinyint(1) NOT NULL,
   `receiverId` varchar(32) DEFAULT NULL,

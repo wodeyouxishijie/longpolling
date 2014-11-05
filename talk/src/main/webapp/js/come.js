@@ -60,7 +60,7 @@ function uploadfile(fileId) {
         success:function(data, status){   
         },  
         error: function(data, status, e){ 
-           alert('上传图片失败!');
+           
         }  
     });  
 }

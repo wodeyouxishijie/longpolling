@@ -52,7 +52,7 @@ public class LoginServlet extends HttpServlet {
 				cacheManger.setUser(userInfo);
 				request.getSession().setAttribute(AppConfig.USER_KEY, userInfo);
 				writeCookie(ServletRequestUtils.getStringParameter(request,REMEMBER)!=null ,resp,username,password);
-				resp.sendRedirect("/cometd.html");
+				resp.sendRedirect("cometd.html");
 				return;
 			} else {
 				resp.sendRedirect("/login.html");

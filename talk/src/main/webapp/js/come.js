@@ -27,7 +27,7 @@ function sendMsg() {
 	if(inputText.length > 128) {
 		inputText = inputText.substring(0,128);
 	}
-	 $.post("/send", 
+	 $.post("send", 
 			  {"_appId":appId,
 				    "_typeId":typeId,
 				    "_unqId":uniqueId,
@@ -37,7 +37,7 @@ function sendMsg() {
 				  $('#JInputButton').attr("disabled","");  	
 				  if(!data.success) {
 					  	if(data.message == "NOT_LOGIN") {
-					  		window.location.href="/login.html";
+					  		window.location.href="login.html";
 					  	} else {
                     		alert('发送失败！原因：'+data.message);
 					  	}
@@ -51,7 +51,7 @@ function sendMsg() {
 
 function uploadfile(fileId) {
 	$.ajaxFileUpload({  
-        url:'/upload',  
+        url:'upload',  
         fileElementId: fileId, 
         data:{"_appId":appId,
 		    "_typeId":typeId,
@@ -77,7 +77,7 @@ function polling() {
 	$.ajax({      
         type:"GET",      
         dataType:"json",      
-        url:"/pull",
+        url:"pull",
         data:{"_appId":appId,"_typeId":typeId,"_unqId":uniqueId,"vId":getmaxId(),"msgId":getMessageId(),"timestamp":(new Date()).valueOf()},
         timeout:35000,
         success:function(data,textStatus){

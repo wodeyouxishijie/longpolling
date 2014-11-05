@@ -65,6 +65,7 @@ function uploadfile(fileId) {
         	}
         },  
         error: function(data, status, e){ 
+        	alert(data)
         }  
     });  
 }

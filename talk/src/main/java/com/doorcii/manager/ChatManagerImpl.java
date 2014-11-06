@@ -90,7 +90,7 @@ public class ChatManagerImpl implements ChatManager {
 	}
 	
 	private String getImgTag(String filePath) {
-		return "<a href='"+filePath+"'><img src='"+filePath+"' class='radio-img' /></a>";
+		return "<a href='"+filePath+"' target='_blank'><img src='"+filePath+"' class='radio-img' /></a>";
 	}
 
 	private String filterHtmlPutFace(String message) {
